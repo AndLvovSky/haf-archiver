@@ -10,9 +10,21 @@ class MainWindow;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
+public:
+
+    enum Page {
+        MAIN,
+        ARCHIVING,
+        UNARCHIVING
+    };
+
 private:
 
     void updateReadyToArchive();
+
+    void updateReadyToUnarchive();
+
+    bool isFolderNameValid(const QString& folderName);
 
 private slots:
 
@@ -24,16 +36,26 @@ private slots:
 
     void on_archiveButton_clicked();
 
+    void on_chooseArchiveButton_clicked();
+
+    void on_archiveNameLineEdit_textChanged(const QString& text);
+
+    void on_chooseSaveDirectoryButton_2_clicked();
+
+    void on_actionUnarchiving_triggered();
+
+    void on_unarchiveButton_clicked();
+
 public:
 
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget* parent = nullptr);
 
     ~MainWindow();
 
 private:
 
+    Ui::MainWindow* ui;
 
-    Ui::MainWindow *ui;
 };
 
 #endif // MAIN_WINDOW_H
