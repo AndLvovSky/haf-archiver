@@ -25,6 +25,8 @@ private slots:
 
     void test_small();
 
+    void test_medium();
+
 };
 
 #endif // TEST_COMPRESSION_H

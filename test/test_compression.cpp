@@ -44,3 +44,21 @@ void TestCompression::test_small() {
         qInfo(err.what());
     }
 }
+
+void TestCompression::test_medium() {
+    std::string s;
+    try {
+        s = "beep boop beer!";
+        QVERIFY(processData(s) == s);
+        s = "Lorem ipsum dolor sit amet";
+        QVERIFY(processData(s) == s);
+        s = "Cras sit amet cursus mauris";
+        QVERIFY(processData(s) == s);
+        s = " Nunc sodales, ex vel congue aliquam";
+        QVERIFY(processData(s) == s);
+        s = "Integer elementum mattis neque, eu hendrerit purus congue pharetra.";
+        QVERIFY(processData(s) == s);
+    } catch (std::runtime_error err) {
+        qInfo(err.what());
+    }
+}
