@@ -6,7 +6,9 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES +=
+SOURCES += \
+    main_test.cpp \
+    test_compression.cpp
 
 LIBS += -L$$OUT_PWD/../src/debug/ -lhafarchiverlib
 
@@ -15,3 +17,6 @@ INCLUDEPATH += $$PWD/../src
 DEPENDPATH += $$PWD/../src
 
 DESTDIR = $$OUT_PWD/../src/debug/
+
+HEADERS += \
+    test_compression.h

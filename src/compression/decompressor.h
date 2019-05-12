@@ -2,8 +2,17 @@
 #define DECOMPRESSOR_H
 
 #include "compressed.h"
+#include "bit_reader.h"
 
 class Decompressor {
+
+private:
+
+    BitReader bitReader;
+
+    Key key;
+
+    char getByte();
 
 public:
 
