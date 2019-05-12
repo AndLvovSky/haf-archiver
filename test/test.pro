@@ -20,3 +20,6 @@ DESTDIR = $$OUT_PWD/../src/debug/
 
 HEADERS += \
     test_compression.h
+
+RESOURCES += \
+    big_tests.qrc

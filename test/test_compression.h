@@ -13,7 +13,9 @@ private:
 
     Data processData(const Data& data);
 
-    std::string processData(const std::string& text);
+    std::string processData(const std::string& text, bool print = true);
+
+    std::string readFromFile(QString testFileName, bool binMode = true);
 
 public:
 
@@ -26,6 +28,8 @@ private slots:
     void test_small();
 
     void test_medium();
+
+    void test_big();
 
 };
 

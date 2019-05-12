@@ -3,6 +3,7 @@
 
 #include <QDebug>
 #include <QMap>
+#include <cmath>
 
 Compressor::Compressor(const Data& data) :
     data(data), isEmpty(false) {
@@ -72,6 +73,8 @@ Data Compressor::__compress(const Key& key) {
         (key.bitCount % 8 ? 1 : 0);
     qInfo() << "new bit count = " << key.bitCount;
     qInfo() << "new byte count = " << byteCount;
+    qInfo() << "compression ratio(%) = " <<
+        std::round((data.size - byteCount) / (float)data.size * 10000) / 100;
     auto compressedData = Data(byteCount);
     BitWriter bitWriter(compressedData);
     for (int i = 0; i < data.size; i++) {
