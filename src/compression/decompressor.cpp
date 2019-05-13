@@ -1,14 +1,14 @@
 #include "decompressor.h"
 
-Decompressor::Decompressor(const Compressed& compressed) :
-    bitReader(compressed.data), key(compressed.key) {}
+Decompressor::Decompressor(ByteIstream& in, ByteOstream& out,
+    const Key& key) : in(in), out(out), key(key), bitReader(BitReader(in)) {}
 
-Data Decompressor::decompress() {
-    Data decompressed(key.oldByteCount);
+void Decompressor::decompress() {
+    in.reset();
     for (int i = 0; i < key.oldByteCount; i++) {
-        decompressed[i] = getByte();
+        char ch = getByte();
+        out.putByte(ch);
     }
-    return decompressed;
 }
 
 char Decompressor::getByte() {

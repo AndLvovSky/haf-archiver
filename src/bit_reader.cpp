@@ -2,18 +2,14 @@
 
 #include <stdexcept>
 
-BitReader::BitReader(const Data& data) :
-    data(data), charCount(0), bitCount(0) {}
+BitReader::BitReader(ByteIstream& in) :
+    in(in), ch(0), bitCount(0) {}
 
 bool BitReader::read() {
-    if (charCount >= data.size) {
-        throw std::runtime_error("Data is empty!");
+    if (bitCount == 0) {
+        ch = in.getByte();
     }
-    bool res = (data[charCount] >> bitCount) & 1;
-    bitCount++;
-    if (bitCount == 8) {
-        bitCount = 0;
-        charCount++;
-    }
+    bool res = (ch >> bitCount) & 1;
+    bitCount = (bitCount + 1) % 8;
     return res;
 }

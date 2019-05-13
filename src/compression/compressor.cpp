@@ -5,29 +5,27 @@
 #include <QMap>
 #include <cmath>
 
-Compressor::Compressor(const Data& data) :
-    data(data), isEmpty(false) {
-    qInfo() << "old bit count = " << data.size * 8;
-    qInfo() << "old byte count = " << data.size;
+Compressor::Compressor(ByteIstream& in, ByteOstream& out) :
+    in(in), out(out) {
+    qInfo() << "old bit count = " << in.byteCount() * 8;
+    qInfo() << "old byte count = " << in.byteCount();
 }
 
 bool Compressor::Comparator::operator () (Node::NodePtr a, Node::NodePtr b) {
     return a->weight > b->weight;
 }
 
-Compressed Compressor::compress() {
-    if (isEmpty) {
-        throw std::runtime_error("Compress can be used only once!");
-    }
+Key Compressor::compress() {
     Key key = createKey();
-    Data data = __compress(key);
-    isEmpty = true;
-    return Compressed(data, key);
+    __compress(key);
+    return key;
 }
 
 void Compressor::findFrequencies() {
-    for (int i = 0; i < data.size; i++) {
-        frequencies[data[i]]++;
+    in.reset();
+    for (int i = 0; i < in.byteCount(); i++) {
+        char ch = in.getByte();
+        frequencies[ch]++;
     }
 }
 
@@ -53,7 +51,7 @@ Key Compressor::createKey() {
             first->weight + second->weight, 0, first, second));
     }
     findCode(heap.top());
-    return Key(heap.top(), data.size, findBitCount());
+    return Key(heap.top(), in.byteCount(), findBitCount());
 }
 
 void Compressor::findCode(Node::NodePtr node, const QString& code) {
@@ -68,27 +66,31 @@ void Compressor::findCode(Node::NodePtr node, const QString& code) {
     findCode(node->right, code + "1");
 }
 
-Data Compressor::__compress(const Key& key) {
+void Compressor::__compress(const Key& key) {
     auto byteCount = key.bitCount / 8 +
         (key.bitCount % 8 ? 1 : 0);
     qInfo() << "new bit count = " << key.bitCount;
     qInfo() << "new byte count = " << byteCount;
     qInfo() << "compression ratio(%) = " <<
-        std::round((data.size - byteCount) / (float)data.size * 10000) / 100;
-    auto compressedData = Data(byteCount);
-    BitWriter bitWriter(compressedData);
-    for (int i = 0; i < data.size; i++) {
-        for (auto ch: haffmanCode[data[i]]) {
+        std::round((in.byteCount() - byteCount) /
+        (float)in.byteCount() * 10000) / 100;
+    in.reset();
+    BitWriter bitWriter(out);
+    for (int i = 0; i < in.byteCount(); i++) {
+        char ch = in.getByte();
+        for (auto ch: haffmanCode[ch]) {
             bitWriter.write(ch == '1');
         }
     }
-    return compressedData;
+    bitWriter.flush();
 }
 
 Data::SizeType Compressor::findBitCount() {
+    in.reset();
     auto res = 0;
-    for (int i = 0; i < data.size; i++) {
-        res += haffmanCode[data[i]].size();
+    for (int i = 0; i < in.byteCount(); i++) {
+        char ch = in.getByte();
+        res += haffmanCode[ch].size();
     }
     return res;
 }

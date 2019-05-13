@@ -1,24 +1,30 @@
 #ifndef DECOMPRESSOR_H
 #define DECOMPRESSOR_H
 
-#include "compressed.h"
+#include "byte_istream.h"
+#include "byte_ostream.h"
 #include "bit_reader.h"
+#include "key.h"
 
 class Decompressor {
 
 private:
 
-    BitReader bitReader;
+    ByteIstream& in;
+
+    ByteOstream& out;
 
     Key key;
+
+    BitReader bitReader;
 
     char getByte();
 
 public:
 
-    Decompressor(const Compressed& compressed);
+    Decompressor(ByteIstream& in, ByteOstream& out, const Key& key);
 
-    Data decompress();
+    void decompress();
 
 };
 

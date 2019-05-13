@@ -1,52 +1,77 @@
 #include "test_compression.h"
 #include "compression/compressor.h"
 #include "compression/decompressor.h"
+#include "ram_byte_istream.h"
+#include "ram_byte_ostream.h"
 
 TestCompression::TestCompression() {}
 
 TestCompression::~TestCompression() {}
 
-Data TestCompression::processData(const Data& data) {
-    //qInfo("begin processing");
-    Compressor compressor(data);
-    //qInfo("created compressor");
-    Compressed compressed = compressor.compress();
-    //qInfo("compressed");
-    Decompressor decompressor(compressed);
-    //qInfo("created decompressor");
-    Data processedData = decompressor.decompress();
-    //qInfo("decompressed");
-    //qInfo("finish processing");
-    return processedData;
+std::string TestCompression::processString(const std::string& text) {
+    if (text.size() > 80) {
+        qInfo((text.substr(0, 80) + "...").c_str());
+    } else {
+        qInfo(text.c_str());
+    }
+
+    RamByteIstream in1(text);
+    RamByteOstream out1;
+    Compressor compressor(in1, out1);
+    Key key = compressor.compress();
+    Data compressedData = out1.getData();
+
+    RamByteIstream in2(compressedData);
+    RamByteOstream out2;
+    Decompressor decompressor(in2, out2, key);
+    decompressor.decompress();
+    Data decompressedData = out2.getData();
+
+    return decompressedData;
 }
 
-std::string TestCompression::processData(
-    const std::string& text, bool print) {
-    if (print) {
-        if (text.size() > 80) {
-            qInfo((text.substr(0, 80) + "...").c_str());
-        } else {
-            qInfo(text.c_str());
+bool TestCompression::checkFile(QString fileName) {
+    qInfo() << fileName;
+    RamByteIstream in1((":/files/" + fileName).toStdString(), true);
+    RamByteOstream out1;
+    Compressor compressor(in1, out1);
+    Key key = compressor.compress();
+    Data compressedData = out1.getData();
+
+    RamByteIstream in2(compressedData);
+    RamByteOstream out2;
+    Decompressor decompressor(in2, out2, key);
+    decompressor.decompress();
+    Data decompressedData = out2.getData();
+
+    if (in1.byteCount() != decompressedData.size) {
+        return false;
+    }
+    in1.reset();
+    for (int i = 0; i < in1.byteCount(); i++) {
+        char in1Char = in1.getByte();
+        if (in1Char != decompressedData[i]) {
+            return false;
         }
     }
-    return processData(Data(text));
+    return true;
 }
 
 void TestCompression::test_small() {
     try {
-        QVERIFY(processData("f") == "f");
-        QVERIFY(processData("4") == "4");
-        QVERIFY(processData("*") == "*");
-        QVERIFY(processData(" ") == " ");
+        QVERIFY(processString("f") == "f");
+        QVERIFY(processString("4") == "4");
+        QVERIFY(processString("*") == "*");
+        QVERIFY(processString(" ") == " ");
 
-        QVERIFY(processData("bc") == "bc");
-        QVERIFY(processData("jj") == "jj");
-        QVERIFY(processData("3t") == "3t");
-        QVERIFY(processData("*h") == "*h");
+        QVERIFY(processString("bc") == "bc");
+        QVERIFY(processString("jj") == "jj");
+        QVERIFY(processString("3t") == "3t");
+        QVERIFY(processString("*h") == "*h");
 
-        QVERIFY(processData("bc ") == "bc ");
-        QVERIFY(processData("5g&") == "5g&");
-        QVERIFY(processData("krk") == "krk");
+        QVERIFY(processString("bc ") == "bc ");
+        QVERIFY(processString("5g&") == "5g&");
+        QVERIFY(processString("krk") == "krk");
     } catch(std::runtime_error err) {
         qInfo(err.what());
     }
@@ -56,15 +81,15 @@ void TestCompression::test_medium() {
     std::string s;
     try {
         s = "beep boop beer!";
-        QVERIFY(processData(s) == s);
+        QVERIFY(processString(s) == s);
         s = "Lorem ipsum dolor sit amet";
-        QVERIFY(processData(s) == s);
+        QVERIFY(processString(s) == s);
         s = "Cras sit amet cursus mauris";
-        QVERIFY(processData(s) == s);
+        QVERIFY(processString(s) == s);
         s = " Nunc sodales, ex vel congue aliquam";
-        QVERIFY(processData(s) == s);
+        QVERIFY(processString(s) == s);
         s = "Integer elementum mattis neque, eu hendrerit purus congue pharetra.";
-        QVERIFY(processData(s) == s);
+        QVERIFY(processString(s) == s);
     } catch (std::runtime_error err) {
         qInfo(err.what());
     }
@@ -87,35 +112,9 @@ void TestCompression::test_big() {
     std::string s;
     try {
         for (const auto& fileName : fileNames) {
-            s = readFromFile(fileName);
-            qInfo() << fileName;
-            QVERIFY(processData(s, false) == s);
+            QVERIFY(checkFile(fileName));
         }
     } catch (std::runtime_error err) {
         qInfo(err.what());
-    }
-}
-
-std::string TestCompression::readFromFile(QString testFileName, bool binMode) {
-    QFile inputFile(":/files/" + testFileName);
-    if (inputFile.open(QIODevice::ReadOnly)) {
-        std::string res = "";
-        if (binMode) {
-             QByteArray byteArray = inputFile.readAll();
-             for (int i = 0; i < byteArray.size(); i++) {
-                 res += byteArray[i];
-             }
-        } else {
-            QTextStream fin(&inputFile);
-            while (!fin.atEnd())
-            {
-              QString line = fin.readLine();
-              res += line.toStdString() + '\n';
-            }
-        }
-        inputFile.close();
-        return res;
-    } else {
-        return "";
     }
 }

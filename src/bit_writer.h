@@ -2,22 +2,25 @@
 #define BIT_WRITER_H
 
 #include "data.h"
+#include "byte_ostream.h"
 
 class BitWriter {
 
 private:
 
-    Data& data;
+    ByteOstream& out;
 
-    Data::SizeType charCount;
+    char ch;
 
-    unsigned int bitCount;
+    Data::SizeType bitCount;
 
 public:
 
-    BitWriter(Data& data);
+    BitWriter(ByteOstream& out);
 
     void write(bool bit);
+
+    void flush();
 
 };
 

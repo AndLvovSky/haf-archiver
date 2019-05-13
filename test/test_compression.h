@@ -13,9 +13,9 @@ private:
 
     Data processData(const Data& data);
 
-    std::string processData(const std::string& text, bool print = true);
+    std::string processString(const std::string& text);
 
-    std::string readFromFile(QString testFileName, bool binMode = true);
+    bool checkFile(QString fileName);
 
 public:
 

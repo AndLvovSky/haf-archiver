@@ -1,9 +1,10 @@
 #ifndef COMPRESSOR_H
 #define COMPRESSOR_H
 
-#include "data.h"
+#include "key.h"
 #include "node.h"
-#include "compressed.h"
+#include "byte_istream.h"
+#include "byte_ostream.h"
 
 #include <vector>
 #include <QMap>
@@ -21,9 +22,9 @@ private:
 
     };
 
-    Data data;
+    ByteIstream& in;
 
-    bool isEmpty;
+    ByteOstream& out;
 
     std::priority_queue<NodePtr, std::vector<NodePtr>, Comparator> heap;
 
@@ -37,15 +38,15 @@ private:
 
     void findCode(NodePtr node, const QString& code = "");
 
-    Data __compress(const Key& key);
+    void __compress(const Key& key);
 
     Data::SizeType findBitCount();
 
 public:
 
-    Compressor(const Data& data);
+    Compressor(ByteIstream& in, ByteOstream& out);
 
-    Compressed compress();
+    Key compress();
 
 };
 

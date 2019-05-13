@@ -2,21 +2,21 @@
 #define BIT_READER_H
 
 #include "data.h"
+#include "byte_istream.h"
 
 class BitReader {
 
-
 private:
 
-    Data data;
+    ByteIstream& in;
 
-    Data::SizeType charCount;
+    char ch;
 
-    unsigned int bitCount;
+    Data::SizeType bitCount;
 
 public:
 
-    BitReader(const Data& data);
+    BitReader(ByteIstream& in);
 
     bool read();
 
