@@ -15,12 +15,6 @@ bool Compressor::Comparator::operator () (Node::NodePtr a, Node::NodePtr b) {
     return a->weight > b->weight;
 }
 
-Key Compressor::compress() {
-    Key key = createKey();
-    __compress(key);
-    return key;
-}
-
 void Compressor::findFrequencies() {
     in.reset();
     for (int i = 0; i < in.byteCount(); i++) {
@@ -29,7 +23,7 @@ void Compressor::findFrequencies() {
     }
 }
 
-Key Compressor::createKey() {
+Key Compressor::prepare() {
     findFrequencies();
     for (const auto& it : frequencies.toStdMap()) {
         heap.push(std::make_shared<Node>(
@@ -51,7 +45,8 @@ Key Compressor::createKey() {
             first->weight + second->weight, 0, first, second));
     }
     findCode(heap.top());
-    return Key(heap.top(), in.byteCount(), findBitCount());
+    key = std::make_shared<Key>(heap.top(), in.byteCount(), findBitCount());
+    return *key;
 }
 
 void Compressor::findCode(Node::NodePtr node, const QString& code) {
@@ -66,10 +61,13 @@ void Compressor::findCode(Node::NodePtr node, const QString& code) {
     findCode(node->right, code + "1");
 }
 
-void Compressor::__compress(const Key& key) {
-    auto byteCount = key.bitCount / 8 +
-        (key.bitCount % 8 ? 1 : 0);
-    qInfo() << "new bit count = " << key.bitCount;
+void Compressor::compress() {
+    if (key == nullptr) {
+        throw std::runtime_error("Compressing is not prepared!");
+    }
+    auto byteCount = key->bitCount / 8 +
+        (key->bitCount % 8 ? 1 : 0);
+    qInfo() << "new bit count = " << key->bitCount;
     qInfo() << "new byte count = " << byteCount;
     qInfo() << "compression ratio(%) = " <<
         std::round((in.byteCount() - byteCount) /

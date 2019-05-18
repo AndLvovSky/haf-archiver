@@ -18,8 +18,11 @@ class Compressor {
 
 private:
 
-    /** Node pointer type. */
+    /** Node pointer. */
     typedef std::shared_ptr<Node> NodePtr;
+
+    /** Key pointer. */
+    typedef std::shared_ptr<Key> KeyPtr;
 
     /**
      * @brief The Comparator class used to compare nodes.
@@ -37,6 +40,8 @@ private:
 
     ByteOstream& out; /**< Bytes writing stream. */
 
+    KeyPtr key = nullptr;
+
     /** Heap for Haffman algorithm. */
     std::priority_queue<NodePtr, std::vector<NodePtr>, Comparator> heap;
 
@@ -52,22 +57,11 @@ private:
     void findFrequencies();
 
     /**
-     * @return Created key for the bytes from ByteIstream.
-     */
-    Key createKey();
-
-    /**
      * Finds Haffman code.
      * @param node - current node in the tree.
      * @param code - accumulated code.
      */
     void findCode(NodePtr node, const QString& code = "");
-
-    /**
-     * Passes compressed bytes to ByteOstream.
-     * @param key - optional current key for statistics.
-     */
-    void __compress(const Key& key);
 
     /**
      * @return Number of bits in compressed bytes.
@@ -84,11 +78,15 @@ public:
     Compressor(ByteIstream& in, ByteOstream& out);
 
     /**
-     * Reads bytes from ByteIstream and passes compressed
-     * bytes to ByteOstream.
-     * @return Key for decompression with some statistics.
+     * Prepares for compressing.
+     * @return Created key for the bytes from ByteIstream.
      */
-    Key compress();
+    Key prepare();
+
+    /**
+     * Reads bytes from ByteIstream and passes compressed bytes to ByteOstream.
+     */
+    void compress();
 
 };
 

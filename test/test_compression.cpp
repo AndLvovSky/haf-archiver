@@ -18,7 +18,8 @@ std::string TestCompression::processString(const std::string& text) {
     RamByteIstream in1(text);
     RamByteOstream out1;
     Compressor compressor(in1, out1);
-    Key key = compressor.compress();
+    Key key = compressor.prepare();
+    compressor.compress();
     Data compressedData = out1.getData();
 
     RamByteIstream in2(compressedData);
@@ -35,7 +36,8 @@ bool TestCompression::checkFile(QString fileName) {
     RamByteIstream in1((":/files/" + fileName).toStdString(), true);
     RamByteOstream out1;
     Compressor compressor(in1, out1);
-    Key key = compressor.compress();
+    Key key = compressor.prepare();
+    compressor.compress();
     Data compressedData = out1.getData();
 
     RamByteIstream in2(compressedData);
