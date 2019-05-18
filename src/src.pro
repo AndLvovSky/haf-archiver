@@ -11,9 +11,8 @@ TARGET = hafarchiverlib
 TEMPLATE = lib
 
 SOURCES += \
-    bit_reader.cpp \
-    bit_writer.cpp \
-    compression/compressed.cpp \
+    compression/bit_reader.cpp \
+    compression/bit_writer.cpp \
     compression/compressor.cpp \
     compression/decompressor.cpp \
     compression/key.cpp \
@@ -23,11 +22,10 @@ SOURCES += \
     ram_byte_ostream.cpp
 
 HEADERS += \
-    bit_reader.h \
-    bit_writer.h \
+    compression/bit_reader.h \
+    compression/bit_writer.h \
     byte_istream.h \
     byte_ostream.h \
-    compression/compressed.h \
     compression/compressor.h \
     compression/decompressor.h \
     compression/key.h \
