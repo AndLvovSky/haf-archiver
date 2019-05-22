@@ -9,6 +9,7 @@ QT       -= gui
 TARGET = hafarchiverlib
 
 TEMPLATE = lib
+CONFIG += staticlib
 
 SOURCES += \
     compression/bit_reader.cpp \
@@ -19,7 +20,9 @@ SOURCES += \
     compression/node.cpp \
     data.cpp \
     ram_byte_istream.cpp \
-    ram_byte_ostream.cpp
+    ram_byte_ostream.cpp \
+    byteinputstream.cpp \
+    byteoutputstream.cpp
 
 HEADERS += \
     compression/bit_reader.h \
@@ -32,7 +35,9 @@ HEADERS += \
     compression/node.h \
     data.h \
     ram_byte_istream.h \
-    ram_byte_ostream.h
+    ram_byte_ostream.h \
+    byteinputstream.h \
+    byteoutputstream.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

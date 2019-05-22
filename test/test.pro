@@ -8,7 +8,9 @@ TEMPLATE = app
 
 SOURCES += \
     main_test.cpp \
-    test_compression.cpp
+    test_compression.cpp \
+    byteinputstreamtest.cpp \
+    byteoutputstreamtest.cpp
 
 LIBS += -L$$OUT_PWD/../src/debug/ -lhafarchiverlib
 
@@ -19,7 +21,9 @@ DEPENDPATH += $$PWD/../src
 DESTDIR = $$OUT_PWD/../src/debug/
 
 HEADERS += \
-    test_compression.h
+    test_compression.h \
+    byteinputstreamtest.h \
+    byteoutputstreamtest.h
 
 RESOURCES += \
     big_tests.qrc
