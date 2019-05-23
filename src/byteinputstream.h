@@ -5,10 +5,11 @@
 #include <qbytearray.h>
 #include "qfile.h"
 
-class ByteInputStream : ByteIstream
+class ByteInputStream : public ByteIstream
 {
 private:
     int CACHE_SIZE = 1000;
+    int fileSize;
 
 private:
     Data cache;
@@ -16,6 +17,8 @@ private:
     int curCounter = 0;
 
     QFile file;
+
+    int resetOffset = 0;
 
 public:
     ByteInputStream(std::string filePath);
@@ -25,6 +28,9 @@ public:
     char getByte() override;
 
     Data::SizeType byteCount() const override;
+
+    void setFileSize(int size);
+    void setResetOffset(int offset);
 
 private:
     void readToCache();

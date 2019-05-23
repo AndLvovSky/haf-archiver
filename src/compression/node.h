@@ -2,6 +2,7 @@
 #define NODE_H
 
 #include <memory>
+#include <QString>
 
 /**
  * @brief The Node class represents node in a Haffman tree.
@@ -10,6 +11,8 @@ struct Node {
 
     /** Node pointer. */
     typedef std::shared_ptr<Node> NodePtr;
+
+    static NodePtr fromString(QString);
 
     int weight; /**< Weight of the node. */
 
@@ -33,6 +36,7 @@ struct Node {
     Node(int weight, char character,
         NodePtr left, NodePtr right, bool isLeaf = false);
 
+    QString toString();
 };
 
 #endif // NODE_H

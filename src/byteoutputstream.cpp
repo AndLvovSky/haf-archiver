@@ -1,10 +1,15 @@
 #include "byteoutputstream.h"
+#include <QDebug>
 
-ByteOutputStream::ByteOutputStream(string filePath)
+ByteOutputStream::ByteOutputStream(string filePath, int writeMode)
 {
+    QIODevice::OpenModeFlag openMode =
+            (writeMode == WRITE_NEW) ? QIODevice::WriteOnly :
+            QIODevice::Append;
+
     file = make_unique<QFile>(QString::fromStdString(filePath));
     try{
-        if(!file->open(QIODevice::WriteOnly)){
+        if(!file->open(openMode)){
             throw new runtime_error("Error creating file");
         }
     } catch(runtime_error err) {

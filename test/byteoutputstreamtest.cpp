@@ -32,7 +32,7 @@ void ByteOutputStreamTest::shouldWriteBytes(string filePath)
         int separatorPos = filePath.find_last_of('/');
         string fileName = filePath.substr(separatorPos + 1, filePath.length() - separatorPos - 1);
 
-        ByteOutputStream ostream(QDir::currentPath().toStdString() + "/" + fileName);
+        ByteOutputStream ostream(QDir::currentPath().toStdString() + "/" + fileName, ByteOutputStream::WRITE_NEW);
         for (int i = 0; i < data.size(); i++) {
             ostream.putByte(data[i]);
         }
