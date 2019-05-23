@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>files/bin/console_app.exe</file>
+        <file>files/bin/qt_lib.dll</file>
+        <file>files/other/laboratory.pdf</file>
+        <file>files/other/sociology.docx</file>
+        <file>files/text/common_words.txt</file>
+        <file>files/text/english_text.txt</file>
+        <file>files/text/log_ssh.log</file>
+        <file>files/images/black-white.jpg</file>
+        <file>files/images/nature.jpg</file>
+        <file>files/images/sample.BMP</file>
+        <file>files/text/google.html</file>
+    </qresource>
+</RCC>

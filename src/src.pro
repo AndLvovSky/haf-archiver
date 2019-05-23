@@ -7,24 +7,32 @@
 QT       -= gui
 
 TARGET = hafarchiverlib
+
 TEMPLATE = lib
 
-DEFINES += LIB_LIBRARY
+SOURCES += \
+    compression/bit_reader.cpp \
+    compression/bit_writer.cpp \
+    compression/compressor.cpp \
+    compression/decompressor.cpp \
+    compression/key.cpp \
+    compression/node.cpp \
+    data.cpp \
+    ram_byte_istream.cpp \
+    ram_byte_ostream.cpp
 
-# The following define makes your compiler emit warnings if you use
-# any feature of Qt which has been marked as deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
-
-# You can also make your code fail to compile if you use deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
-SOURCES +=
-
-HEADERS +=
+HEADERS += \
+    compression/bit_reader.h \
+    compression/bit_writer.h \
+    byte_istream.h \
+    byte_ostream.h \
+    compression/compressor.h \
+    compression/decompressor.h \
+    compression/key.h \
+    compression/node.h \
+    data.h \
+    ram_byte_istream.h \
+    ram_byte_ostream.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
