@@ -1,3 +1,4 @@
 * text eol=crlf
 *.jpg binary
 *.png binary
+test/files/* linguist-vendored
