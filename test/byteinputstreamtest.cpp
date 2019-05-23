@@ -14,10 +14,10 @@ void ByteInputStreamTest::shouldReturnFileSize()
 {
     try {
         QVERIFY(emptyFile->byteCount() == 0);
-        QVERIFY(commonWords->byteCount() == 155418);
+        QVERIFY(commonWords->byteCount() == 175418);
         QVERIFY(englishText->byteCount() == 662445);
         QVERIFY(googlePage->byteCount() == 211310);
-        QVERIFY(logSSH->byteCount() == 223217);
+        QVERIFY(logSSH->byteCount() == 225216);
         QVERIFY(sentense->byteCount() == 82);
     } catch(std::runtime_error err) {
         qInfo(err.what());

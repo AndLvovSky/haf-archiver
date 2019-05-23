@@ -1,13 +1,13 @@
 #include "byteoutputstream.h"
 
-ByteOutputStream::ByteOutputStream(string filePath)
+ByteOutputStream::ByteOutputStream(std::string filePath)
 {
-    file = make_unique<QFile>(QString::fromStdString(filePath));
+    file = std::make_unique<QFile>(QString::fromStdString(filePath));
     try{
         if(!file->open(QIODevice::WriteOnly)){
-            throw new runtime_error("Error creating file");
+            throw new std::runtime_error("Error creating file");
         }
-    } catch(runtime_error err) {
+    } catch(std::runtime_error err) {
         qInfo(err.what());
     }
 }

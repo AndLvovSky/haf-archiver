@@ -4,15 +4,14 @@
 #include "iostream"
 #include <QFile>
 #include "byte_ostream.h"
-
-using namespace std;
+#include <memory>
 
 class ByteOutputStream : ByteOstream
 {
 private:
     int BUFFER_SIZE = 1000;
 
-    unique_ptr<QFile> file;
+    std::unique_ptr<QFile> file;
     char* buffer = new char[BUFFER_SIZE];
     int bufferCounter = 0;
 
@@ -21,7 +20,7 @@ public:
      * @brief ByteOutputStream Creates and initializes output file
      * @param filePath output file path
      */
-    ByteOutputStream(string filePath);
+    ByteOutputStream(std::string filePath);
 
     /**
      * @brief close closes descriptor of the output file
