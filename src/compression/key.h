@@ -9,6 +9,7 @@
  * decompress file, compressed by Compressor.
  */
 class Key {
+    public:
 
     friend class Compressor;
 

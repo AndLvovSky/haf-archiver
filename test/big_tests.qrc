@@ -11,5 +11,8 @@
         <file>files/images/nature.jpg</file>
         <file>files/images/sample.BMP</file>
         <file>files/text/google.html</file>
+        <file>files/text/empty_file.txt</file>
+        <file>files/text/sentence.txt</file>
+        <file>files/images/Tryit Editor v3.6.html</file>
     </qresource>
 </RCC>

@@ -1,11 +1,16 @@
 #include <QtTest/QtTest>
 #include "test_compression.h"
 
+#include "byteinputstreamtest.h"
+#include "byteoutputstreamtest.h"
+
 int main(int argc, char* argv[]) {
-    int status = 0;
     {
-        TestCompression obj;
-        status |= QTest::qExec(&obj, argc, argv);
+//        TestCompression obj;
+        ByteInputStreamTest inStreamTest;
+        ByteOutputStreamTest outStreamTest;
+        QTest::qExec(&inStreamTest, argc, argv);
+        QTest::qExec(&outStreamTest, argc, argv);
     }
-    return status;
+    return 0;
 }
