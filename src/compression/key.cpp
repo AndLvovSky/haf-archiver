@@ -6,7 +6,6 @@ QStringList Key::nodesParts = QStringList();
 
 Key Key::fromString(QString s)
 {
-    //qInfo() << "fromString() full" << s;
     QString oldBytesCountS;
     int i = 0;
     while(s[i] != '/') {
@@ -34,7 +33,7 @@ Key Key::fromString(QString s)
         }
     }
 
-    //qInfo() << nodesParts.size() << nodesParts;
+    qInfo() << nodesParts.size() << nodesParts;
     Node::NodePtr root = deserialize();
     nodesParts.clear();
     nodesCounter = 0;
@@ -54,6 +53,28 @@ QString Key::toString()
     return s;
 }
 
+QByteArray Key::serialize()
+{
+    QByteArray data;
+    data.push_back(*(char*)&oldByteCount);
+    data.push_back(*(char*)&bitCount);
+    data.push_back(serialize(root));
+    return data;
+}
+
+QByteArray Key::serialize(Node::NodePtr node)
+{
+    if (!node) {
+        return "000000";
+    }
+
+    QByteArray data;
+    data.append(node->serialize());
+    data.append(node->left->serialize());
+    data.append(node->right->serialize());
+    return data;
+}
+
 QString Key::stringOf(Node::NodePtr node)
 {
     if (!node) {
@@ -70,7 +91,7 @@ QString Key::stringOf(Node::NodePtr node)
 
 Node::NodePtr Key::deserialize()
 {
-    if (nodesCounter == nodesParts.length() || nodesParts[nodesCounter] == "#") {
+    if (nodesCounter >= nodesParts.length() || nodesParts[nodesCounter] == "#") {
         nodesCounter++;
         //qInfo() << "nullptr";
         return nullptr;

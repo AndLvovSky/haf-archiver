@@ -1,15 +1,15 @@
 #include "byteoutputstream.h"
 #include <QDebug>
 
-ByteOutputStream::ByteOutputStream(string filePath, int writeMode)
+ByteOutputStream::ByteOutputStream(QString filePath, int writeMode)
+    : file(filePath)
 {
     QIODevice::OpenModeFlag openMode =
             (writeMode == WRITE_NEW) ? QIODevice::WriteOnly :
             QIODevice::Append;
 
-    file = make_unique<QFile>(QString::fromStdString(filePath));
     try{
-        if(!file->open(openMode)){
+        if(!file.open(openMode)){
             throw new runtime_error("Error creating file");
         }
     } catch(runtime_error err) {
@@ -20,7 +20,7 @@ ByteOutputStream::ByteOutputStream(string filePath, int writeMode)
 void ByteOutputStream::close()
 {
     flush();
-    file->close();
+    file.close();
 }
 
 void ByteOutputStream::putByte(char byte)
@@ -33,10 +33,25 @@ void ByteOutputStream::putByte(char byte)
     bufferCounter++;
 }
 
+void ByteOutputStream::writeInt(int n)
+{
+    file.write((char*)&n, sizeof(int));
+}
+
+void ByteOutputStream::writeString(QString s)
+{
+    file.write(s.toStdString().c_str(), s.size());
+}
+
+void ByteOutputStream::writeData(char *data, int length)
+{
+    file.write(data, length);
+}
+
 void ByteOutputStream::flush()
 {
     try {
-       file->write(buffer, bufferCounter);
+       file.write(buffer, bufferCounter);
        bufferCounter = 0;
     } catch(std::runtime_error err) {
         qInfo(err.what());

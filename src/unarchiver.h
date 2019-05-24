@@ -12,17 +12,17 @@ using namespace std;
 class Unarchiver
 {
 private:
-    QString archivePath;
-
     QString outputDirPath;
-
-    vector<unique_ptr<QFile>> outputFiles;
 
     ArchiveInfo info;
 
+    // we track number of bytes we've read from archive to pass it
+    // to the archive input stream so that decompressor can reset
+    // archive input stream not to the file begin but to the begin
+    // of the specific compressed data part
     int bytesCounter = 0;
 
-    unique_ptr<ByteInputStream> archiveStream;
+    ByteInputStream in;
 
 public:
     Unarchiver(QString archivePath, QString outputDirPath);
@@ -30,6 +30,13 @@ public:
     void process();
 
     ArchiveInfo getInfo();
+
+private:
+    QString readStringLengthAndString();
+
+    QByteArray readByteArrayLengthAndByteArray();
+
+    void readInfo();
 };
 
 #endif // UNARCHIVER_H

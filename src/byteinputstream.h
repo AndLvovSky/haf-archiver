@@ -21,7 +21,9 @@ private:
     int resetOffset = 0;
 
 public:
-    ByteInputStream(std::string filePath);
+    ByteInputStream(QString filePath);
+
+    void close();
 
     void reset() override;
 
@@ -30,7 +32,14 @@ public:
     Data::SizeType byteCount() const override;
 
     void setFileSize(int size);
+
     void setResetOffset(int offset);
+
+    int readInt();
+
+    char* read(int length);
+
+    QByteArray readByteArray(int length);
 
 private:
     void readToCache();

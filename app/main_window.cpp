@@ -7,6 +7,7 @@
 #include <QDebug>
 #include "compression/node.h"
 #include "compression/key.h"
+#include <QDataStream>
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),

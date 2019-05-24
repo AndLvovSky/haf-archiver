@@ -9,62 +9,52 @@
 #include "compression/compressor.h"
 #include "compression/key.h"
 
-void Archiver::writeToArchiveStream(QString s)
-{
-    for (auto c: s) {
-        archiveStream->putByte(c.toLatin1());
-    }
-}
-
 Archiver::Archiver(QStringList filesToArchiveUris, QString destDir, QString destFileName)
-    : filesToArchiveUris(filesToArchiveUris), destDir(destDir), destFileName(destFileName)
+    : filesToArchiveUris(filesToArchiveUris),
+      out(destDir.append('/').append(destFileName).append(".haf"),
+          ByteOutputStream::WRITE_NEW)
 {
 
 }
 
 void Archiver::process()
 {
-    QByteArray byteArray;
-    int numberOfFiles = filesToArchiveUris.size();
-    byteArray.append(QString::number(numberOfFiles));
-    byteArray.append('/');
-    vector<unique_ptr<QFile>> files;
-    for (QString filePath: filesToArchiveUris) {
-        unique_ptr<QFile> file = make_unique<QFile>(filePath);
-        files.push_back(move(file));
-        QFileInfo info(filePath);
-        byteArray.append(info.completeBaseName()).append('.').append(info.completeSuffix()).append('/');
-        byteArray.append(info.birthTime().toString()).append('/');
-    }
-
-    QString archivePath = destDir.append('/').append(destFileName).append(".haf");
-    //qInfo() << archivePath;
-    archiveStream = make_unique<ByteOutputStream>(archivePath.toStdString(), ByteOutputStream::WRITE_NEW);
-    writeToArchiveStream(QString(byteArray));
-
+    writeFilesInfo();
 
     for (QString filePath: filesToArchiveUris) {
-        ByteInputStream fileStream(filePath.toStdString());
-        Compressor compressor(fileStream, *archiveStream);
-
-        Key key = (fileStream.byteCount() == 0) ? Key(nullptr, 0, 0) : compressor.prepare();
-        //qInfo() << "compression prepared";
+        ByteInputStream in(filePath);
+        Compressor compressor(in, out);
+        // compressor crashes if file size is 0
+        Key key = (in.byteCount() == 0) ? Key(nullptr, 0, 0) : compressor.prepare();
         QString keyS = key.toString();
-        //qInfo() << keyS;
-        writeToArchiveStream(QString::number(keyS.size()));
-        archiveStream->putByte('/');
-        writeToArchiveStream(keyS);
-        //qInfo() << "Key: " << keyS;
+        writeStringSizeAndString(keyS);
 
         int compressedSize = key.bitCount / 8;
         if (key.bitCount % 8 != 0) compressedSize++;
-        writeToArchiveStream(QString::number(compressedSize));
-        archiveStream->putByte('/');
-
-        if (fileStream.byteCount() != 0) {
-            compressor.compress();
-        }
+        out.writeInt(compressedSize);
+        compressor.compress();
     }
 
-    archiveStream->close();
+    out.close();
+}
+
+void Archiver::writeFilesInfo()
+{
+    out.writeInt(filesToArchiveUris.size());
+
+    for (QString filePath: filesToArchiveUris) {
+        QFileInfo fileInfo(filePath);
+        QString fileName = fileInfo.completeBaseName().append('.')
+                .append(fileInfo.completeSuffix());
+        QString fileBirthTime = fileInfo.birthTime().toString();
+
+        writeStringSizeAndString(fileName);
+        writeStringSizeAndString(fileBirthTime);
+    }
+}
+
+void Archiver::writeStringSizeAndString(QString s)
+{
+    out.writeInt(s.size());
+    out.writeString(s);
 }

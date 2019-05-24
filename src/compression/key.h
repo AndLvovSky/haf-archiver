@@ -38,6 +38,9 @@ class Key {
 
     QString toString();
 
+    QByteArray serialize();
+    QByteArray serialize(Node::NodePtr);
+
 private:
     QString stringOf(Node::NodePtr node);
 

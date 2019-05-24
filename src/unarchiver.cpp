@@ -8,108 +8,67 @@
 using namespace std;
 
 Unarchiver::Unarchiver(QString archivePath, QString outputDirPath)
-    :archivePath(archivePath), outputDirPath(outputDirPath),
-     archiveStream(make_unique<ByteInputStream>(archivePath.toStdString()))
+    :outputDirPath(outputDirPath), in(archivePath)
 {
-    QByteArray byteArray;
-
-    char c;
-    while((c = archiveStream->getByte()) != '/') {
-        byteArray.append(c);
-        bytesCounter++;
-    }
-    bytesCounter++;
-    int filesNumber = byteArray.toInt();
-    byteArray.clear();
-
-    for (int i = 0; i < filesNumber; i++) {
-        FileInfo fileInfo;
-
-        while((c = archiveStream->getByte()) != '/') {
-            byteArray.append(c);
-            bytesCounter++;
-        }
-        bytesCounter++;
-        fileInfo.name = byteArray;
-        byteArray.clear();
-
-        while((c = archiveStream->getByte()) != '/') {
-            byteArray.append(c);
-            bytesCounter++;
-        }
-        bytesCounter++;
-        fileInfo.birthTime = QDateTime::fromString(byteArray);
-        byteArray.clear();
-
-        info.filesInfo.push_back(fileInfo);
-    }
+    readInfo();
 }
 
 void Unarchiver::process(){
     for (auto fileInfo: info.filesInfo) {
         qInfo() << "Unarchiver: processing" << fileInfo.name;
-        QString fileName = fileInfo.name;
+        QByteArray keyS = readByteArrayLengthAndByteArray();
+        qInfo() << QString::fromStdString(keyS.toStdString());
+        Key key = Key::fromString(QString::fromStdString(keyS.toStdString()));
+        // serialization and deserialization are seem to be correct
+        qInfo() << key.toString();
 
-        // read key size
-        QByteArray byteArray;
-        char c;
-        while((c = archiveStream->getByte()) != '/') {
-            byteArray.append(c);
-            bytesCounter++;
-        }
-        bytesCounter++;
-        int keySize = byteArray.toInt();
-        byteArray.clear();
+        // reading compressed data size and setting up the archive stream
+        int dataSize = in.readInt();
+        bytesCounter += 4;
+        in.setFileSize(dataSize);
+        in.setResetOffset(bytesCounter);
+        qInfo() << "dataSize: " << dataSize;
 
-        //read key
-        for (int i = 0; i < keySize; i++) {
-            byteArray.append(archiveStream->getByte());
-            bytesCounter++;
-        }
-        //qInfo() <<"Key: "<< byteArray;
-        //qInfo() << byteArray.size();
-        Key key = Key::fromString(QString::fromStdString(byteArray.toStdString()));
-//        qInfo() << byteArray;
-//        qInfo() << key.toString();
-
-        // read data size
-        byteArray.clear();
-        while((c = archiveStream->getByte()) != '/') {
-            byteArray.append(c);
-            bytesCounter++;
-        }
-        bytesCounter++;
-        int dataSize = byteArray.toInt();
-        byteArray.clear();
-
-        //decompress data
         QString filePath = outputDirPath;
-        filePath.append('/').append(fileName);
-        ByteOutputStream ostream(filePath.toStdString(), ByteOutputStream::WRITE_NEW);
-
-        archiveStream->setFileSize(dataSize);
-        archiveStream->setResetOffset(bytesCounter);
-        QByteArray testBytes;
-        /*qInfo() << "Compressed data size: " << dataSize;
-        for (int i = 0; i < dataSize; i++) {
-            char c = archiveStream->getByte();
-            testBytes.append(c);
-        }
-        qInfo() << "Compressed data: " << testBytes;*/
-        archiveStream->reset();
-
-
-
-        Decompressor decompressor(*archiveStream.get(), ostream, key);
+        filePath.append('/').append(fileInfo.name);
+        ByteOutputStream out(filePath, ByteOutputStream::WRITE_NEW);
+        Decompressor decompressor(in, out, key);
         decompressor.decompress();
-        //qInfo() << "unarchived " + fileName + " successfully!";
-        ostream.close();
-        bytesCounter += dataSize;
+        qInfo() << "unarchived " + fileInfo.name + " successfully!";
+        out.close();
     }
 }
 
 ArchiveInfo Unarchiver::getInfo()
 {
     return info;
+}
+
+QString Unarchiver::readStringLengthAndString()
+{
+    int length = in.readInt();
+    // 4 is the int's bytesize
+    bytesCounter += length + 4;
+    return QString::fromStdString(string(in.read(length))).mid(0, length);
+}
+
+QByteArray Unarchiver::readByteArrayLengthAndByteArray()
+{
+    int length = in.readInt();
+    bytesCounter += length + 4;
+    return in.readByteArray(length);
+}
+
+void Unarchiver::readInfo()
+{
+    int filesCount = in.readInt();
+    bytesCounter += 4;
+
+    for (int i = 0; i < filesCount; i++) {
+        FileInfo fileInfo;
+        fileInfo.name = readStringLengthAndString();
+        fileInfo.birthTime = QDateTime::fromString(readStringLengthAndString());
+        info.filesInfo.push_back(fileInfo);
+    }
 }
 

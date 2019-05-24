@@ -37,6 +37,10 @@ struct Node {
         NodePtr left, NodePtr right, bool isLeaf = false);
 
     QString toString();
+
+    QByteArray serialize();
+
+    static Node::NodePtr deserialize(QByteArray data);
 };
 
 #endif // NODE_H
