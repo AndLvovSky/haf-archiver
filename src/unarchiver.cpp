@@ -34,6 +34,7 @@ void Unarchiver::process(){
         ByteOutputStream out(filePath, ByteOutputStream::WRITE_NEW);
         Decompressor decompressor(in, out, key);
         decompressor.decompress();
+        bytesCounter += dataSize;
         qInfo() << "unarchived " + fileInfo.name + " successfully!";
         out.close();
     }

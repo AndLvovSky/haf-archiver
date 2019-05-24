@@ -24,6 +24,7 @@ Key Key::fromString(QString s)
     s = s.mid(i);
     //qInfo() << "fromString()" << s.size() << s;
     nodesParts = s.split("@");
+    nodesCounter = 0;
 
     // delimiters fix
     for (int i = 1; i < nodesParts.size(); i++) {

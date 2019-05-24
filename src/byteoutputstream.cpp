@@ -19,18 +19,20 @@ ByteOutputStream::ByteOutputStream(QString filePath, int writeMode)
 
 void ByteOutputStream::close()
 {
-    flush();
+    //flush();
     file.close();
 }
 
 void ByteOutputStream::putByte(char byte)
 {
-    if (bufferCounter >= BUFFER_SIZE) {
+    char *c = new char[1];
+    c[0] = byte;
+    file.write(c, 1);
+    /*if (bufferCounter >= BUFFER_SIZE) {
       flush();
-      bufferCounter = 0;
     }
     buffer[bufferCounter] = byte;
-    bufferCounter++;
+    bufferCounter++;*/
 }
 
 void ByteOutputStream::writeInt(int n)

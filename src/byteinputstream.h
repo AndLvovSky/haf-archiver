@@ -12,7 +12,7 @@ private:
     int fileSize;
 
 private:
-    Data cache;
+    char* cache;
 
     int curCounter = 0;
 

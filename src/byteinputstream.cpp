@@ -21,11 +21,7 @@ void ByteInputStream::close()
 }
 
 void ByteInputStream::reset() {
-    file.reset();
-    if (resetOffset > 0) {
-        char* data = new char[resetOffset];
-        file.read(data, resetOffset);
-    }
+    file.seek(resetOffset);
     readToCache();
     curCounter = 0;
 }
@@ -87,8 +83,5 @@ void ByteInputStream::readToCache()
     if (response == -1) {
         throw new std::runtime_error("Reading from file error");
     }
-    cache = Data(CACHE_SIZE);
-    for (int i = 0; i < CACHE_SIZE; i++) {
-        cache[i] =  data[i];
-    }
+    cache = data;
 }

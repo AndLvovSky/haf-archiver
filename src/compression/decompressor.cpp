@@ -1,4 +1,5 @@
 #include "decompressor.h"
+#include <QDebug>
 
 Decompressor::Decompressor(ByteIstream& in, ByteOstream& out,
     const Key& key) : in(in), out(out), key(key), bitReader(BitReader(in)) {}

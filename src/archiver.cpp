@@ -32,7 +32,8 @@ void Archiver::process()
         int compressedSize = key.bitCount / 8;
         if (key.bitCount % 8 != 0) compressedSize++;
         out.writeInt(compressedSize);
-        compressor.compress();
+        if(compressedSize != 0) compressor.compress();
+        in.close();
     }
 
     out.close();
