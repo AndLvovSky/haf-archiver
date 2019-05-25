@@ -45,9 +45,17 @@ void Archiver::writeFilesInfo()
         QString fileName = fileInfo.completeBaseName().append('.')
                 .append(fileInfo.completeSuffix());
         QString fileBirthTime = fileInfo.birthTime().toString();
+        int fileSize = fileInfo.size();
+        ByteInputStream in(filePath);
+        Compressor compressor(in, out);
+        Key key = compressor.prepare();
+        in.close();
+        int compressedSize = key.bitCount / 8;
 
         writeStringSizeAndString(fileName);
         writeStringSizeAndString(fileBirthTime);
+        out.writeInt(fileSize);
+        out.writeInt(compressedSize);
     }
 }
 
