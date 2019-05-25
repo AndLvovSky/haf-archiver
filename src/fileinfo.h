@@ -11,6 +11,8 @@ public:
 
     QString name;
     QDateTime birthTime;
+    int originalSize;
+    int compressedSize;
 };
 
 #endif // FILEINFO_H

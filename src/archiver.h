@@ -6,6 +6,7 @@
 #include "charwithsize.h"
 #include "byteoutputstream.h"
 #include "compression/key.h"
+#include "compression/compressor.h"
 
 class Archiver
 {
