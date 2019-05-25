@@ -158,3 +158,28 @@ void MainWindow::unarchivingError(QString err) {
 void MainWindow::unarchivingFinished() {
     ui->statusBar->showMessage("unarchiving completed", 1000);
 }
+
+void MainWindow::on_actionViewArchive_triggered() {
+    auto stw = ui->stackedWidget;
+    stw->setCurrentIndex(Page::ARCHIVE_VIEW);
+}
+
+void MainWindow::on_chooseArchiveButtonView_clicked() {
+    auto fileName = QFileDialog::getOpenFileName(this,
+        tr("Open Archive"), QString(), tr("Archive Files (*.haf)"));
+    if (fileName == "") return;
+    ui->archiveTextView->setText(fileName);
+    updateReadyToView();
+}
+
+void MainWindow::updateReadyToView() {
+    if (ui->archiveTextView->text() != "") {
+        ui->viewArchiveButton->setEnabled(true);
+    } else {
+        ui->viewArchiveButton->setEnabled(false);
+    }
+}
+
+void MainWindow::on_viewArchiveButton_clicked() {
+    // TODO
+}

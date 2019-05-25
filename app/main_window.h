@@ -15,7 +15,8 @@ public:
     enum Page {
         MAIN,
         ARCHIVING,
-        UNARCHIVING
+        UNARCHIVING,
+        ARCHIVE_VIEW
     };
 
 private:
@@ -45,6 +46,14 @@ private slots:
     void on_actionUnarchiving_triggered();
 
     void on_unarchiveButton_clicked();
+
+    void on_actionViewArchive_triggered();
+
+    void on_chooseArchiveButtonView_clicked();
+
+    void updateReadyToView();
+
+    void on_viewArchiveButton_clicked();
 
 public:
 

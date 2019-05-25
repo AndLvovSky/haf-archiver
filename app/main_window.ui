@@ -291,6 +291,102 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="view_page">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QLineEdit" name="archiveTextView">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="chooseArchiveButtonView">
+            <property name="text">
+             <string>Choose archive</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="viewArchiveButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>View</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="filesTableWidget"/>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>224</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -310,6 +406,7 @@
     </property>
     <addaction name="actionArchiving"/>
     <addaction name="actionUnarchiving"/>
+    <addaction name="actionViewArchive"/>
    </widget>
    <addaction name="menuAction"/>
   </widget>
@@ -322,6 +419,7 @@
    </attribute>
    <addaction name="actionArchiving"/>
    <addaction name="actionUnarchiving"/>
+   <addaction name="actionViewArchive"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionArchiving">
@@ -352,6 +450,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F2</string>
+   </property>
+  </action>
+  <action name="actionViewArchive">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/view_icon.png</normaloff>:/images/view_icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Archive view</string>
+   </property>
+   <property name="toolTip">
+    <string>view archive</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F3</string>
    </property>
   </action>
  </widget>
