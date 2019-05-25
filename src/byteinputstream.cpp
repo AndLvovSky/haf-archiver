@@ -17,6 +17,7 @@ ByteInputStream::ByteInputStream(QString filePath)
 
 void ByteInputStream::close()
 {
+    delete[] cache;
     file.close();
 }
 

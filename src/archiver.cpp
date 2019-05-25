@@ -28,7 +28,9 @@ void Archiver::process()
         // compressor crashes if file size is 0
         Key key = (in.byteCount() == 0) ? Key(nullptr, 0, 0) : compressor.prepare();
         writeKey(key);
+        qInfo() << "Compression start2";
         compressAndWrite(key, compressor);
+        qInfo() << "Compression finish2";
 
         in.close();
     }
@@ -70,6 +72,7 @@ void Archiver::writeKey(Key key)
     CharWithSize keyS = key.serialize();
     out.writeInt(keyS.size);
     out.writeData(keyS.c, keyS.size);
+    delete [] keyS.c;
 }
 
 void Archiver::compressAndWrite(Key key, Compressor compressor)
