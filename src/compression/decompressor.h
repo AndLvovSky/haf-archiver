@@ -1,8 +1,8 @@
 #ifndef DECOMPRESSOR_H
 #define DECOMPRESSOR_H
 
-#include "byte_istream.h"
-#include "byte_ostream.h"
+#include "stream/byte_istream.h"
+#include "stream/byte_ostream.h"
 #include "bit_reader.h"
 #include "key.h"
 

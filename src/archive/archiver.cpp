@@ -3,8 +3,8 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QDateTime>
-#include "byteoutputstream.h"
-#include "byteinputstream.h"
+#include "stream/std/byteoutputstream.h"
+#include "stream/std/byteinputstream.h"
 #include <QDir>
 #include "compression/compressor.h"
 #include "compression/key.h"

@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <QString>
-#include "charwithsize.h"
+#include "util/charwithsize.h"
 
 /**
  * @brief The Node class represents node in a Haffman tree.

@@ -1,5 +1,5 @@
 #include "unarchive_worker.h"
-#include "unarchiver.h"
+#include "archive/unarchiver.h"
 
 UnarchiveWorker::UnarchiveWorker(QString archivePath, QString outputDirPath) :
     archivePath(archivePath), outputDirPath(outputDirPath) {}

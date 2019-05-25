@@ -18,36 +18,36 @@ SOURCES += \
     compression/decompressor.cpp \
     compression/key.cpp \
     compression/node.cpp \
-    data.cpp \
-    ram_byte_istream.cpp \
-    ram_byte_ostream.cpp \
-    byteinputstream.cpp \
-    byteoutputstream.cpp \
-    archiver.cpp \
-    unarchiver.cpp \
-    archiveinfo.cpp \
-    fileinfo.cpp \
-    charwithsize.cpp
+    util/data.cpp \
+    stream/ram/ram_byte_istream.cpp \
+    stream/ram/ram_byte_ostream.cpp \
+    stream/std/byteinputstream.cpp \
+    stream/std/byteoutputstream.cpp \
+    archive/archiver.cpp \
+    archive/unarchiver.cpp \
+    info/archiveinfo.cpp \
+    info/fileinfo.cpp \
+    util/charwithsize.cpp
 
 HEADERS += \
     compression/bit_reader.h \
     compression/bit_writer.h \
-    byte_istream.h \
-    byte_ostream.h \
+    stream/byte_istream.h \
+    stream/byte_ostream.h \
     compression/compressor.h \
     compression/decompressor.h \
     compression/key.h \
     compression/node.h \
-    data.h \
-    ram_byte_istream.h \
-    ram_byte_ostream.h \
-    byteinputstream.h \
-    byteoutputstream.h \
-    archiver.h \
-    unarchiver.h \
-    archiveinfo.h \
-    fileinfo.h \
-    charwithsize.h
+    util/data.h \
+    stream/ram/ram_byte_istream.h \
+    stream/ram/ram_byte_ostream.h \
+    stream/std/byteinputstream.h \
+    stream/std/byteoutputstream.h \
+    archive/archiver.h \
+    archive/unarchiver.h \
+    info/archiveinfo.h \
+    info/fileinfo.h \
+    util/charwithsize.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

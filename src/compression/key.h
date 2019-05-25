@@ -1,11 +1,11 @@
 #ifndef KEY_H
 #define KEY_H
 
-#include "data.h"
+#include "util/data.h"
 #include "node.h"
 #include <QString>
 #include <QStringList>
-#include "charwithsize.h"
+#include "util/charwithsize.h"
 
 /**
  * @brief The Key class contains information, that allows to

@@ -1,7 +1,7 @@
 #ifndef BYTEINPUTSTREAM_H
 #define BYTEINPUTSTREAM_H
 
-#include "byte_istream.h"
+#include "stream/byte_istream.h"
 #include <qbytearray.h>
 #include "qfile.h"
 

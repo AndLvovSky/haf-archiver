@@ -2,16 +2,16 @@
 #include "ui_main_window.h"
 
 #include <QFileDialog>
-#include "archiver.h"
-#include "unarchiver.h"
+#include "archive/archiver.h"
+#include "archive/unarchiver.h"
 #include <QDebug>
 #include "compression/node.h"
 #include "compression/key.h"
 #include <QDataStream>
-#include "charwithsize.h"
-#include "archive_worker.h"
+#include "util/charwithsize.h"
+#include "worker/archive_worker.h"
 #include <QThread>
-#include "unarchive_worker.h"
+#include "worker/unarchive_worker.h"
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),

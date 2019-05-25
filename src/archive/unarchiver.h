@@ -4,11 +4,11 @@
 #include <QString>
 #include <vector>
 #include <QFile>
-#include "archiveinfo.h"
-#include "byteinputstream.h"
-#include "byteoutputstream.h"
+#include "info/archiveinfo.h"
+#include "stream/std/byteinputstream.h"
+#include "stream/std/byteoutputstream.h"
 #include "compression/compressor.h"
-#include "charwithsize.h"
+#include "util/charwithsize.h"
 
 using namespace std;
 

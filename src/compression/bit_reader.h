@@ -1,8 +1,8 @@
 #ifndef BIT_READER_H
 #define BIT_READER_H
 
-#include "data.h"
-#include "byte_istream.h"
+#include "util/data.h"
+#include "stream/byte_istream.h"
 
 /**
  * @brief The BitReader class is an adapter for ByteIstream.

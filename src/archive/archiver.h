@@ -3,8 +3,8 @@
 
 #include <QString>
 #include <QStringList>
-#include "charwithsize.h"
-#include "byteoutputstream.h"
+#include "util/charwithsize.h"
+#include "stream/std/byteoutputstream.h"
 #include "compression/key.h"
 #include "compression/compressor.h"
 

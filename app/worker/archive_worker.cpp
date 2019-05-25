@@ -1,5 +1,5 @@
 #include "archive_worker.h"
-#include "archiver.h"
+#include "archive/archiver.h"
 
 ArchiveWorker::ArchiveWorker(QStringList filesToArchiveUris,
     QString destDir, QString destFileName) :

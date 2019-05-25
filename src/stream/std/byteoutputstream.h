@@ -3,7 +3,7 @@
 
 #include "iostream"
 #include <QFile>
-#include "byte_ostream.h"
+#include "stream/byte_ostream.h"
 #include <QDataStream>
 
 class ByteOutputStream : public ByteOstream

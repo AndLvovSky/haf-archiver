@@ -1,8 +1,8 @@
 #ifndef BIT_WRITER_H
 #define BIT_WRITER_H
 
-#include "data.h"
-#include "byte_ostream.h"
+#include "util/data.h"
+#include "stream/byte_ostream.h"
 
 /**
  * @brief The BitWriter class is an adapter for ByteOstream.

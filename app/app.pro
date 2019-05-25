@@ -25,15 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        archive_worker.cpp \
+        worker/archive_worker.cpp \
         main.cpp \
         main_window.cpp \
-        unarchive_worker.cpp
+        worker/unarchive_worker.cpp
 
 HEADERS += \
-        archive_worker.h \
+        worker/archive_worker.h \
         main_window.h \
-        unarchive_worker.h
+        worker/unarchive_worker.h
 
 FORMS += \
         main_window.ui

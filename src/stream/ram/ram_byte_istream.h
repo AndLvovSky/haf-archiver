@@ -1,7 +1,7 @@
 #ifndef RAM_BYTE_ISTREAM_H
 #define RAM_BYTE_ISTREAM_H
 
-#include "byte_istream.h"
+#include "stream/byte_istream.h"
 
 /**
  * @brief The RamByteIstream class implements ByteIstream, using RAM memory.

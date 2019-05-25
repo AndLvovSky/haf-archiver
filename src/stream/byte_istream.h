@@ -1,7 +1,7 @@
 #ifndef BYTE_ISTREAM_H
 #define BYTE_ISTREAM_H
 
-#include "data.h"
+#include "util/data.h"
 
 /**
  * @brief The ByteIstream interface determines classes, that

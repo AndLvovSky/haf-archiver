@@ -1,8 +1,8 @@
 #ifndef RAM_BYTE_OSTREAM_H
 #define RAM_BYTE_OSTREAM_H
 
-#include "byte_ostream.h"
-#include "data.h"
+#include "stream/byte_ostream.h"
+#include "util/data.h"
 
 #include <vector>
 

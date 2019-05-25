@@ -3,8 +3,8 @@
 
 #include "key.h"
 #include "node.h"
-#include "byte_istream.h"
-#include "byte_ostream.h"
+#include "stream/byte_istream.h"
+#include "stream/byte_ostream.h"
 
 #include <vector>
 #include <QMap>

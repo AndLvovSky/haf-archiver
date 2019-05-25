@@ -1,10 +1,10 @@
 #include "unarchiver.h"
-#include "byteoutputstream.h"
+#include "stream/std/byteoutputstream.h"
 #include <QDebug>
 #include <QDateTime>
 #include "compression/key.h"
 #include "compression/decompressor.h"
-#include "charwithsize.h"
+#include "util/charwithsize.h"
 
 using namespace std;
 
