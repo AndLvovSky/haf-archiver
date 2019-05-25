@@ -24,17 +24,12 @@ void Archiver::process()
     for (QString filePath: filesToArchiveUris) {
         ByteInputStream in(filePath);
         Compressor compressor(in, out);
+
         // compressor crashes if file size is 0
-
         Key key = (in.byteCount() == 0) ? Key(nullptr, 0, 0) : compressor.prepare();
-        CharWithSize keyS = key.serialize();
-        out.writeInt(keyS.size);
-        out.writeData(keyS.c, keyS.size);
+        writeKey(key);
+        compressAndWrite(key, compressor);
 
-        int compressedSize = key.bitCount / 8;
-        if (key.bitCount % 8 != 0) compressedSize++;
-        out.writeInt(compressedSize);
-        if(compressedSize != 0) compressor.compress();
         in.close();
     }
 
@@ -60,4 +55,19 @@ void Archiver::writeStringSizeAndString(QString s)
 {
     out.writeInt(s.size());
     out.writeString(s);
+}
+
+void Archiver::writeKey(Key key)
+{
+    CharWithSize keyS = key.serialize();
+    out.writeInt(keyS.size);
+    out.writeData(keyS.c, keyS.size);
+}
+
+void Archiver::compressAndWrite(Key key, Compressor compressor)
+{
+    int compressedSize = key.bitCount / 8;
+    if (key.bitCount % 8 != 0) compressedSize++;
+    out.writeInt(compressedSize);
+    if(compressedSize != 0) compressor.compress();
 }

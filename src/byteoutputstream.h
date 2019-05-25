@@ -9,11 +9,7 @@
 class ByteOutputStream : public ByteOstream
 {
 private:
-    int BUFFER_SIZE = 1000;
-
     QFile file;
-    char* buffer = new char[BUFFER_SIZE];
-    int bufferCounter = 0;
 
 public:
     static const int WRITE_NEW = 0;
@@ -37,8 +33,6 @@ public:
     void writeString(QString s);
 
     void writeData(char* data, int length);
-
-    void flush();
 };
 
 #endif // BYTEOUTPUTSTREAM_H

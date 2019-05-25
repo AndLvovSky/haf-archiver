@@ -19,7 +19,6 @@ ByteOutputStream::ByteOutputStream(QString filePath, int writeMode)
 
 void ByteOutputStream::close()
 {
-    //flush();
     file.close();
 }
 
@@ -28,11 +27,6 @@ void ByteOutputStream::putByte(char byte)
     char *c = new char[1];
     c[0] = byte;
     file.write(c, 1);
-    /*if (bufferCounter >= BUFFER_SIZE) {
-      flush();
-    }
-    buffer[bufferCounter] = byte;
-    bufferCounter++;*/
 }
 
 void ByteOutputStream::writeInt(int n)
@@ -48,14 +42,4 @@ void ByteOutputStream::writeString(QString s)
 void ByteOutputStream::writeData(char *data, int length)
 {
     file.write(data, length);
-}
-
-void ByteOutputStream::flush()
-{
-    try {
-       file.write(buffer, bufferCounter);
-       bufferCounter = 0;
-    } catch(std::runtime_error err) {
-        qInfo(err.what());
-    }
 }

@@ -6,6 +6,9 @@
 #include <QFile>
 #include "archiveinfo.h"
 #include "byteinputstream.h"
+#include "byteoutputstream.h"
+#include "compression/compressor.h"
+#include "charwithsize.h"
 
 using namespace std;
 
@@ -37,6 +40,8 @@ private:
     QByteArray readByteArrayLengthAndByteArray();
 
     void readInfo();
+
+    CharWithSize getKey(ByteInputStream &in);
 };
 
 #endif // UNARCHIVER_H

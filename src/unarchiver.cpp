@@ -17,14 +17,7 @@ Unarchiver::Unarchiver(QString archivePath, QString outputDirPath)
 void Unarchiver::process(){
     for (auto fileInfo: info.filesInfo) {
         qInfo() << "Unarchiver: processing" << fileInfo.name;
-
-        int keyLength = in.readInt();
-        bytesCounter += sizeof(int);
-        CharWithSize keyC;
-        keyC.size = keyLength;
-        keyC.c = in.read(keyLength);
-        bytesCounter += keyLength;
-        Key key = Key::deserialize(keyC);
+        Key key = Key::deserialize(getKey(in));
 
         // reading compressed data size and setting up the archive stream
         int dataSize = in.readInt();
@@ -74,5 +67,16 @@ void Unarchiver::readInfo()
         fileInfo.birthTime = QDateTime::fromString(readStringLengthAndString());
         info.filesInfo.push_back(fileInfo);
     }
+}
+
+CharWithSize Unarchiver::getKey(ByteInputStream &in)
+{
+    int keyLength = in.readInt();
+    bytesCounter += sizeof(int);
+    CharWithSize keyC;
+    keyC.size = keyLength;
+    keyC.c = in.read(keyLength);
+    bytesCounter += keyLength;
+    return keyC;
 }
 

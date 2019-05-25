@@ -3,7 +3,9 @@
 
 #include <QString>
 #include <QStringList>
+#include "charwithsize.h"
 #include "byteoutputstream.h"
+#include "compression/key.h"
 
 class Archiver
 {
@@ -23,6 +25,10 @@ private:
     void writeFilesInfo();
 
     void writeStringSizeAndString(QString s);
+
+    void writeKey(Key key);
+
+    void compressAndWrite(Key key, Compressor compressor);
 };
 
 #endif // ARCHIVER_H
