@@ -9,6 +9,9 @@
 #include "compression/key.h"
 #include <QDataStream>
 #include "charwithsize.h"
+#include "archive_worker.h"
+#include <QThread>
+#include "unarchive_worker.h"
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
@@ -53,8 +56,27 @@ void MainWindow::on_archiveButton_clicked() {
     QString archiveName = ui->archiveNameLineEdit->text();
 
     ui->archiveButton->setEnabled(false);
-    Archiver archiver(filesToArchiveUris, archiveDest, archiveName);
-    archiver.process();
+    ui->statusBar->showMessage("archiving started", 1000);
+
+    QThread* thread = new QThread;
+    ArchiveWorker* worker = new ArchiveWorker(
+        filesToArchiveUris, archiveDest, archiveName);
+    worker->moveToThread(thread);
+    connect(worker, SIGNAL(error(QString)), this, SLOT(archivingError(QString)));
+    connect(thread, SIGNAL(started()), worker, SLOT(process()));
+    connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(worker, SIGNAL(finished()), this, SLOT(archivingFinished()));
+    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
+}
+
+void MainWindow::archivingError(QString err) {
+    ui->statusBar->showMessage(err, 1000);
+}
+
+void MainWindow::archivingFinished() {
+    ui->statusBar->showMessage("archiving completed", 1000);
 }
 
 void MainWindow::updateReadyToArchive() {
@@ -115,6 +137,24 @@ void MainWindow::on_unarchiveButton_clicked() {
     ui->unarchiveButton->setEnabled(false);
     QString s = ui->archiveText->text();
     QString s2 = ui->saveDirectoryText_2->text();
-    Unarchiver unarchiver(s, s2);
-    unarchiver.process();
+    ui->statusBar->showMessage("unarchiving started", 1000);
+
+    QThread* thread = new QThread;
+    UnarchiveWorker* worker = new UnarchiveWorker(s, s2);
+    worker->moveToThread(thread);
+    connect(worker, SIGNAL(error(QString)), this, SLOT(unarchivingError(QString)));
+    connect(thread, SIGNAL(started()), worker, SLOT(process()));
+    connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(worker, SIGNAL(finished()), this, SLOT(unarchivingFinished()));
+    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
+}
+
+void MainWindow::unarchivingError(QString err) {
+    ui->statusBar->showMessage(err, 1000);
+}
+
+void MainWindow::unarchivingFinished() {
+    ui->statusBar->showMessage("unarchiving completed", 1000);
 }

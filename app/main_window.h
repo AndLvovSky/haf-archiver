@@ -52,6 +52,16 @@ public:
 
     ~MainWindow();
 
+public slots:
+
+    void archivingError(QString err);
+
+    void archivingFinished();
+
+    void unarchivingError(QString err);
+
+    void unarchivingFinished();
+
 private:
 
     Ui::MainWindow* ui;
