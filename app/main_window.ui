@@ -320,20 +320,44 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionArchiving"/>
+   <addaction name="actionUnarchiving"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionArchiving">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/archive_icon.png</normaloff>:/images/archive_icon.png</iconset>
+   </property>
    <property name="text">
     <string>Archiving</string>
    </property>
+   <property name="toolTip">
+    <string>archive</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F1</string>
+   </property>
   </action>
   <action name="actionUnarchiving">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/unarchive_icon.png</normaloff>:/images/unarchive_icon.png</iconset>
+   </property>
    <property name="text">
     <string>Unarchiving</string>
+   </property>
+   <property name="toolTip">
+    <string>unarchive</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F2</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

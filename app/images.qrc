@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/archive_icon.png</file>
+        <file>images/unarchive_icon.png</file>
+    </qresource>
+</RCC>
