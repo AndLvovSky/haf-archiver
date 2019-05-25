@@ -25,9 +25,11 @@ void Archiver::process()
         ByteInputStream in(filePath);
         Compressor compressor(in, out);
         // compressor crashes if file size is 0
+
         Key key = (in.byteCount() == 0) ? Key(nullptr, 0, 0) : compressor.prepare();
-        QString keyS = key.toString();
-        writeStringSizeAndString(keyS);
+        CharWithSize keyS = key.serialize();
+        out.writeInt(keyS.size);
+        out.writeData(keyS.c, keyS.size);
 
         int compressedSize = key.bitCount / 8;
         if (key.bitCount % 8 != 0) compressedSize++;

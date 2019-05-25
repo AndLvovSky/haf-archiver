@@ -8,6 +8,7 @@
 #include "compression/node.h"
 #include "compression/key.h"
 #include <QDataStream>
+#include "charwithsize.h"
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),

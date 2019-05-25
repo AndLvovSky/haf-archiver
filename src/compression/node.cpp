@@ -24,24 +24,22 @@ QString Node::toString()
     return s;
 }
 
-QByteArray Node::serialize()
+CharWithSize Node::serialize()
 {
-    char* c = new char[7];
-    c[6] = '\0';
-    c[0] = *(char*)&isLeaf;
-    c[1] = character;
-    sprintf(c + 2, "%d", weight);
-    QByteArray data;
-    data.append(c);
-    qInfo() << data.size();
-    qInfo() << Node::deserialize(data)->weight;
-    return data;
+    CharWithSize c;
+    c.size = 2 + sizeof(int);
+    c.c = new char[c.size];
+    c.c[0] = isLeaf;
+    c.c[1] = character;
+    memcpy(c.c + 2, &weight, sizeof(int));
+    return c;
 }
 
-Node::NodePtr Node::deserialize(QByteArray data)
+Node::NodePtr Node::deserialize(CharWithSize data)
 {
-    bool isLeaf = bool(data[0]);
-    char character = data[1];
-    int weight = int(*data.mid(2).data());
+    bool isLeaf = bool(data.c[0]);
+    char character = data.c[1];
+    int weight;
+    memcpy(&weight, data.c + 2, sizeof(int));
     return std::make_shared<Node>(weight, character, nullptr, nullptr, isLeaf);
 }

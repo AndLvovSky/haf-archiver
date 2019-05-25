@@ -26,7 +26,8 @@ SOURCES += \
     archiver.cpp \
     unarchiver.cpp \
     archiveinfo.cpp \
-    fileinfo.cpp
+    fileinfo.cpp \
+    charwithsize.cpp
 
 HEADERS += \
     compression/bit_reader.h \
@@ -45,7 +46,8 @@ HEADERS += \
     archiver.h \
     unarchiver.h \
     archiveinfo.h \
-    fileinfo.h
+    fileinfo.h \
+    charwithsize.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

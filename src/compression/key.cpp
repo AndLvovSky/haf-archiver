@@ -3,6 +3,7 @@
 
 int Key::nodesCounter = 0;
 QStringList Key::nodesParts = QStringList();
+std::vector<char*> Key::nodes;
 
 Key Key::fromString(QString s)
 {
@@ -54,27 +55,6 @@ QString Key::toString()
     return s;
 }
 
-QByteArray Key::serialize()
-{
-    QByteArray data;
-    data.push_back(*(char*)&oldByteCount);
-    data.push_back(*(char*)&bitCount);
-    data.push_back(serialize(root));
-    return data;
-}
-
-QByteArray Key::serialize(Node::NodePtr node)
-{
-    if (!node) {
-        return "000000";
-    }
-
-    QByteArray data;
-    data.append(node->serialize());
-    data.append(node->left->serialize());
-    data.append(node->right->serialize());
-    return data;
-}
 
 QString Key::stringOf(Node::NodePtr node)
 {
@@ -108,3 +88,80 @@ Node::NodePtr Key::deserialize()
 
     return node;
 }
+
+CharWithSize Key::serialize()
+{
+    CharWithSize c;
+    c.size = sizeof(int) * 2;
+    c.c = new char[c.size];
+    memcpy(c.c, &oldByteCount, sizeof(int));
+    memcpy(c.c + sizeof (int), &bitCount, sizeof(int));
+    c.push_back(serialize(root));
+    return c;
+}
+
+CharWithSize Key::serialize(Node::NodePtr node)
+{
+    CharWithSize c;
+    c.size = 2 + sizeof(int);
+    c.c = new char[c.size];
+    if (!node) {
+        // nullptr node
+        for (int i = 0; i < c.size; i++) {
+            c.c[i] = '0';
+        }
+        return c;
+    }
+
+    c.c = node->serialize().c;
+    c.push_back(serialize(node->left));
+    c.push_back(serialize(node->right));
+    return c;
+}
+
+Key Key::deserialize(CharWithSize c)
+{
+    // get 2 numbers
+    int oldByteCount;
+    memcpy(&oldByteCount, c.c, sizeof(int));
+    int bitCount;
+    memcpy(&bitCount, c.c + sizeof(int), sizeof(int));
+
+    int offset = sizeof(int) * 2;
+    int nodeSize = 2 + sizeof (int);
+    int nodesCount = (c.size - offset) / nodeSize;
+    //split to nodes
+    nodes.clear();
+    for (int k = 0; k < nodesCount; k++) {
+        char* node = new char[nodeSize];
+        for (int i = 0; i < nodeSize; i++) {
+            node[i] = c.c[offset + k * nodeSize + i];
+        }
+        nodes.push_back(node);
+    }
+
+    nodesCounter = 0;
+    Node::NodePtr root = deserialize2();
+    return Key(root, oldByteCount, bitCount);
+}
+
+
+Node::NodePtr Key::deserialize2()
+{
+   if (nodesCounter >= nodes.size() || nodes[nodesCounter][0] == '0') {
+        nodesCounter++;
+        return nullptr;
+    }
+
+    CharWithSize c;
+    c.size = 2 + sizeof(int);
+    c.c = nodes[nodesCounter];
+    Node::NodePtr node = Node::deserialize(c);
+    nodesCounter++;
+
+    node->left = deserialize2();
+    node->right = deserialize2();
+    return node;
+    return nullptr;
+}
+

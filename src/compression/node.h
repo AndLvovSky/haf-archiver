@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <QString>
+#include "charwithsize.h"
 
 /**
  * @brief The Node class represents node in a Haffman tree.
@@ -38,9 +39,9 @@ struct Node {
 
     QString toString();
 
-    QByteArray serialize();
+    CharWithSize serialize();
 
-    static Node::NodePtr deserialize(QByteArray data);
+    static Node::NodePtr deserialize(CharWithSize data);
 };
 
 #endif // NODE_H

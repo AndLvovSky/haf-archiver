@@ -4,6 +4,7 @@
 #include <QDateTime>
 #include "compression/key.h"
 #include "compression/decompressor.h"
+#include "charwithsize.h"
 
 using namespace std;
 
@@ -16,18 +17,20 @@ Unarchiver::Unarchiver(QString archivePath, QString outputDirPath)
 void Unarchiver::process(){
     for (auto fileInfo: info.filesInfo) {
         qInfo() << "Unarchiver: processing" << fileInfo.name;
-        QByteArray keyS = readByteArrayLengthAndByteArray();
-        qInfo() << QString::fromStdString(keyS.toStdString());
-        Key key = Key::fromString(QString::fromStdString(keyS.toStdString()));
-        // serialization and deserialization are seem to be correct
-        qInfo() << key.toString();
+
+        int keyLength = in.readInt();
+        bytesCounter += sizeof(int);
+        CharWithSize keyC;
+        keyC.size = keyLength;
+        keyC.c = in.read(keyLength);
+        bytesCounter += keyLength;
+        Key key = Key::deserialize(keyC);
 
         // reading compressed data size and setting up the archive stream
         int dataSize = in.readInt();
-        bytesCounter += 4;
+        bytesCounter += sizeof(int);
         in.setFileSize(dataSize);
         in.setResetOffset(bytesCounter);
-        qInfo() << "dataSize: " << dataSize;
 
         QString filePath = outputDirPath;
         filePath.append('/').append(fileInfo.name);
@@ -48,22 +51,21 @@ ArchiveInfo Unarchiver::getInfo()
 QString Unarchiver::readStringLengthAndString()
 {
     int length = in.readInt();
-    // 4 is the int's bytesize
-    bytesCounter += length + 4;
+    bytesCounter += length + sizeof(int);
     return QString::fromStdString(string(in.read(length))).mid(0, length);
 }
 
 QByteArray Unarchiver::readByteArrayLengthAndByteArray()
 {
     int length = in.readInt();
-    bytesCounter += length + 4;
+    bytesCounter += length + sizeof(int);
     return in.readByteArray(length);
 }
 
 void Unarchiver::readInfo()
 {
     int filesCount = in.readInt();
-    bytesCounter += 4;
+    bytesCounter += sizeof(int);
 
     for (int i = 0; i < filesCount; i++) {
         FileInfo fileInfo;
