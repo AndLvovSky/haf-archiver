@@ -27,6 +27,7 @@ void ByteOutputStream::putByte(char byte)
     char *c = new char[1];
     c[0] = byte;
     file.write(c, 1);
+    delete[] c;
 }
 
 void ByteOutputStream::writeInt(int n)
