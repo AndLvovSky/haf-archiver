@@ -79,7 +79,7 @@ void MainWindow::updateReadyToUnarchive() {
 void MainWindow::on_chooseArchiveButton_clicked()
 {
     auto fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Archive"), "C:/", tr("Archive Files (*.haf)"));
+        tr("Open Archive"), QString(), tr("Archive Files (*.haf)"));
     if (fileName == "") return;
     ui->archiveText->setText(fileName);
     updateReadyToUnarchive();
