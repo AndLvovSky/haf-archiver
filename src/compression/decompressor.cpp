@@ -6,7 +6,6 @@ Decompressor::Decompressor(ByteIstream& in, ByteOstream& out,
 
 void Decompressor::decompress() {
     in.reset();
-    qInfo() << "Starting decompression";
     for (int i = 0; i < key.oldByteCount; i++) {
         char ch = getByte();
         out.putByte(ch);

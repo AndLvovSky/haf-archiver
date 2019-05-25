@@ -1,5 +1,5 @@
 #include "bit_reader.h"
-#include <QDebug>
+
 #include <stdexcept>
 
 BitReader::BitReader(ByteIstream& in) :

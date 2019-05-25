@@ -41,6 +41,7 @@ void Unarchiver::process(){
         qInfo() << "unarchived " + fileInfo.name + " successfully!";
         out.close();
     }
+    in.close();
 }
 
 ArchiveInfo Unarchiver::getInfo()

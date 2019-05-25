@@ -9,8 +9,8 @@ TEMPLATE = app
 SOURCES += \
     main_test.cpp \
     test_compression.cpp \
-    keytest.cpp \
-    nodetest.cpp
+    nodetest.cpp \
+    archiverunarchivertest.cpp
 
 LIBS += -L$$OUT_PWD/../src/debug/ -lhafarchiverlib
 
@@ -22,8 +22,8 @@ DESTDIR = $$OUT_PWD/../src/debug/
 
 HEADERS += \
     test_compression.h \
-    keytest.h \
-    nodetest.h
+    nodetest.h \
+    archiverunarchivertest.h
 
 RESOURCES += \
     big_tests.qrc

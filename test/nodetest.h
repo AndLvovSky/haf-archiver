@@ -4,7 +4,7 @@
 #include <QtTest>
 #include "compression/node.h"
 
-class NodeTest: public QObject {
+class NodeTest : public QObject {
 
     Q_OBJECT
 
@@ -12,7 +12,7 @@ public:
     NodeTest();
 
 private slots:
-    void shouldSerializeAndDeserializeEqually();
+    void shouldSerializeAndDeserialze();
 };
 
 #endif // NODETEST_H
