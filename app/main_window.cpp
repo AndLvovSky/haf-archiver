@@ -181,5 +181,26 @@ void MainWindow::updateReadyToView() {
 }
 
 void MainWindow::on_viewArchiveButton_clicked() {
-    // TODO
+    QString archivePath = ui->archiveTextView->text();
+    Unarchiver unarchiver(archivePath, "");
+    auto filesInfo = unarchiver.getInfo().filesInfo;
+
+    auto tw = ui->filesTableWidget;
+    QStringList sl;
+    tw->setRowCount(filesInfo.size());
+    tw->setColumnCount(4);
+    sl << "Name" << "Bytes before" << "Bytes after" << "Last change date";
+    tw->setHorizontalHeaderLabels(sl);
+    tw->verticalHeader()->setVisible(false);
+    tw->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    tw->setStyleSheet(
+        "QTableView {selection-background-color: rgba(0, 0, 255, 0.3);}");
+
+    for (int i = 0; i < filesInfo.size(); i++) {
+        auto cur = filesInfo[i];
+        tw->setItem(i, 0, new QTableWidgetItem(cur.name));
+        tw->setItem(i, 1, new QTableWidgetItem(QString::number(cur.originalSize)));
+        tw->setItem(i, 2, new QTableWidgetItem(QString::number(cur.compressedSize)));
+        tw->setItem(i, 3, new QTableWidgetItem(cur.birthTime.toString()));
+    }
 }

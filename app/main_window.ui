@@ -370,20 +370,14 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="filesTableWidget"/>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+         <widget class="QTableWidget" name="filesTableWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>224</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -424,7 +418,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionArchiving">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset>
      <normaloff>:/images/archive_icon.png</normaloff>:/images/archive_icon.png</iconset>
    </property>
    <property name="text">
@@ -439,7 +433,7 @@
   </action>
   <action name="actionUnarchiving">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset>
      <normaloff>:/images/unarchive_icon.png</normaloff>:/images/unarchive_icon.png</iconset>
    </property>
    <property name="text">
@@ -454,7 +448,7 @@
   </action>
   <action name="actionViewArchive">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset>
      <normaloff>:/images/view_icon.png</normaloff>:/images/view_icon.png</iconset>
    </property>
    <property name="text">
@@ -469,8 +463,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
