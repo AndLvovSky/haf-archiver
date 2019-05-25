@@ -64,7 +64,7 @@ void Unarchiver::readInfo()
     for (int i = 0; i < filesCount; i++) {
         FileInfo fileInfo;
         fileInfo.name = readStringLengthAndString();
-        fileInfo.birthTime = QDateTime::fromString(readStringLengthAndString());
+        fileInfo.birthTime = QDateTime::fromString(readStringLengthAndString(), Qt::ISODate);
         fileInfo.originalSize = in.readInt();
         bytesCounter += sizeof(int);
         fileInfo.compressedSize = in.readInt();
