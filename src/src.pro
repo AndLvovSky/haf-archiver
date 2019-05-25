@@ -22,7 +22,12 @@ SOURCES += \
     ram_byte_istream.cpp \
     ram_byte_ostream.cpp \
     byteinputstream.cpp \
-    byteoutputstream.cpp
+    byteoutputstream.cpp \
+    archiver.cpp \
+    unarchiver.cpp \
+    archiveinfo.cpp \
+    fileinfo.cpp \
+    charwithsize.cpp
 
 HEADERS += \
     compression/bit_reader.h \
@@ -37,7 +42,12 @@ HEADERS += \
     ram_byte_istream.h \
     ram_byte_ostream.h \
     byteinputstream.h \
-    byteoutputstream.h
+    byteoutputstream.h \
+    archiver.h \
+    unarchiver.h \
+    archiveinfo.h \
+    fileinfo.h \
+    charwithsize.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

@@ -4,23 +4,26 @@
 #include "iostream"
 #include <QFile>
 #include "byte_ostream.h"
-#include <memory>
+#include <QDataStream>
 
 class ByteOutputStream : ByteOstream
 {
 private:
     int BUFFER_SIZE = 1000;
 
-    std::unique_ptr<QFile> file;
+    QFile file;
     char* buffer = new char[BUFFER_SIZE];
     int bufferCounter = 0;
 
 public:
+    static const int WRITE_NEW = 0;
+    static const int APPEND = 1;
+
     /**
      * @brief ByteOutputStream Creates and initializes output file
      * @param filePath output file path
      */
-    ByteOutputStream(std::string filePath);
+    ByteOutputStream(QString filePath, int writeMode);
 
     /**
      * @brief close closes descriptor of the output file
@@ -28,6 +31,12 @@ public:
     void close();
 
     void putByte(char byte);
+
+    void writeInt(int n);
+
+    void writeString(QString s);
+
+    void writeData(char* data, int length);
 
     void flush();
 };

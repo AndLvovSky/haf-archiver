@@ -2,6 +2,13 @@
 #include "ui_main_window.h"
 
 #include <QFileDialog>
+#include "archiver.h"
+#include "unarchiver.h"
+#include <QDebug>
+#include "compression/node.h"
+#include "compression/key.h"
+#include <QDataStream>
+#include "charwithsize.h"
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
@@ -41,9 +48,13 @@ void MainWindow::on_chooseSaveDirectoryButton_clicked() {
 }
 
 void MainWindow::on_archiveButton_clicked() {
-    // do archiving
+    QStringList filesToArchiveUris = ui->filesToArchiveText->text().split(';');
+    QString archiveDest = ui->saveDirectoryText->text();
+    QString archiveName = ui->archiveNameLineEdit->text();
+
     ui->archiveButton->setEnabled(false);
-    QMessageLogger().debug("Start archiving");
+    Archiver archiver(filesToArchiveUris, archiveDest, archiveName);
+    archiver.process();
 }
 
 void MainWindow::updateReadyToArchive() {
@@ -102,5 +113,8 @@ void MainWindow::on_actionUnarchiving_triggered() {
 void MainWindow::on_unarchiveButton_clicked() {
     // do unarchiving
     ui->unarchiveButton->setEnabled(false);
-    QMessageLogger().debug("Start unarchiving");
+    QString s = ui->archiveText->text();
+    QString s2 = ui->saveDirectoryText_2->text();
+    Unarchiver unarchiver(s, s2);
+    unarchiver.process();
 }

@@ -3,6 +3,9 @@
 
 #include "data.h"
 #include "node.h"
+#include <QString>
+#include <QStringList>
+#include "charwithsize.h"
 
 /**
  * @brief The Key class contains information, that allows to
@@ -14,6 +17,8 @@ class Key {
     friend class Compressor;
 
     friend class Decompressor;
+
+    static Key fromString(QString s);
 
     Node::NodePtr root; /**< Root of the Haffman tree. */
 
@@ -32,6 +37,21 @@ class Key {
     Key(Node::NodePtr root,
         Data::SizeType oldByteCount, Data::SizeType bitCount);
 
+    QString toString();
+
+    CharWithSize serialize();
+    static Key deserialize(CharWithSize c);
+
+private:
+    QString stringOf(Node::NodePtr node);
+
+    CharWithSize serialize(Node::NodePtr);
+    static std::vector<char*> nodes;
+    static Node::NodePtr deserialize2();
+
+    static Node::NodePtr deserialize();
+    static QStringList nodesParts;
+    static int nodesCounter;
 };
 
 #endif // KEY_H
