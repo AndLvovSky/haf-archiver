@@ -46,7 +46,10 @@ QString Unarchiver::readStringLengthAndString()
 {
     int length = in.readInt();
     bytesCounter += length + sizeof(int);
-    return QString::fromStdString(string(in.read(length))).mid(0, length);
+    char* resChar = in.read(length);
+    QString res = QString::fromStdString(string(resChar)).mid(0, length);
+    delete[] resChar;
+    return res;
 }
 
 QByteArray Unarchiver::readByteArrayLengthAndByteArray()

@@ -17,7 +17,9 @@ ByteInputStream::ByteInputStream(QString filePath)
 
 void ByteInputStream::close()
 {
-    delete[] cache;
+    if (cache != nullptr) {
+        delete[] cache;
+    }
     file.close();
 }
 
@@ -46,6 +48,7 @@ int ByteInputStream::readInt()
     int a;
     char* c = read(sizeof (int));
     memcpy(&a, c, sizeof (int));
+    delete[] c;
     return a;
 }
 
@@ -83,6 +86,9 @@ void ByteInputStream::readToCache()
     int response = file.read(data, CACHE_SIZE);
     if (response == -1) {
         throw new std::runtime_error("Reading from file error");
+    }
+    if (cache != nullptr) {
+        delete[] cache;
     }
     cache = data;
 }

@@ -6,5 +6,6 @@ void CharWithSize::push_back(CharWithSize o)
     memcpy(c2, c, size);
     memcpy(c2 + size, o.c, o.size);
     size += o.size;
+    delete[] c;
     c = c2;
 }
