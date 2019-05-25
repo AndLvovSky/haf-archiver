@@ -6,7 +6,7 @@
 #include "byte_ostream.h"
 #include <QDataStream>
 
-class ByteOutputStream : ByteOstream
+class ByteOutputStream : public ByteOstream
 {
 private:
     int BUFFER_SIZE = 1000;

@@ -10,7 +10,7 @@ ByteOutputStream::ByteOutputStream(QString filePath, int writeMode)
 
     try{
         if(!file.open(openMode)){
-            throw new runtime_error("Error creating file");
+            throw new std::runtime_error("Error creating file");
         }
     } catch(std::runtime_error err) {
         qInfo(err.what());
