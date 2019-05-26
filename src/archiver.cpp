@@ -28,9 +28,7 @@ void Archiver::process()
         // compressor crashes if file size is 0
         Key key = (in.byteCount() == 0) ? Key(nullptr, 0, 0) : compressor.prepare();
         writeKey(key);
-        qInfo() << "Compression start2";
         compressAndWrite(key, compressor);
-        qInfo() << "Compression finish2";
 
         in.close();
     }
@@ -47,10 +45,6 @@ void Archiver::writeFilesInfo()
         QString fileName = fileInfo.completeBaseName().append('.')
                 .append(fileInfo.completeSuffix());
         QString fileBirthTime = fileInfo.birthTime().toString(Qt::ISODate);
-        qInfo() << "here1";
-        qInfo() << fileInfo.birthTime().isValid();
-        qInfo() << fileBirthTime;
-        qInfo() << "here2";
         int fileSize = fileInfo.size();
         ByteInputStream in(filePath);
         Compressor compressor(in, out);
