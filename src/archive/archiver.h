@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include "util/charwithsize.h"
+#include "stream/std/byteinputstream.h"
 #include "stream/std/byteoutputstream.h"
 #include "compression/key.h"
 #include "compression/compressor.h"
@@ -15,6 +16,9 @@ Q_OBJECT
 private:
     QStringList filesToArchiveUris;
     ByteOutputStream out;
+    std::vector<Compressor> compressors;
+    std::vector<Key> savedKeys;
+    std::vector<std::shared_ptr<ByteInputStream>> inputStreams;
 
 public:
     Archiver(QStringList filesToArchiveUris, QString destDir, QString destFileName);

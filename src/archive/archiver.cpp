@@ -21,18 +21,16 @@ void Archiver::process()
 {
     emit progress("preparing archiving");
     writeFilesInfo();
+    emit progress("process archiving");
 
-    for (QString filePath: filesToArchiveUris) {
+    for (int i = 0; i < filesToArchiveUris.size(); i++) {
+        QString filePath = filesToArchiveUris[i];
         emit progress("start compressing: " + filePath);
-        ByteInputStream in(filePath);
-        Compressor compressor(in, out);
 
-        // compressor crashes if file size is 0
-        Key key = (in.byteCount() == 0) ? Key(nullptr, 0, 0) : compressor.prepare();
-        writeKey(key);
-        compressAndWrite(key, compressor);
+        writeKey(savedKeys[i]);
+        compressAndWrite(savedKeys[i], compressors[i]);
 
-        in.close();
+        inputStreams[i]->close();
         emit progress("finish compressing: " + filePath);
     }
 
@@ -45,21 +43,24 @@ void Archiver::writeFilesInfo()
     out.writeInt(filesToArchiveUris.size());
 
     for (QString filePath: filesToArchiveUris) {
+        emit progress("start preparing " + filePath);
         QFileInfo fileInfo(filePath);
         QString fileName = fileInfo.completeBaseName().append('.')
                 .append(fileInfo.completeSuffix());
         QString fileBirthTime = fileInfo.birthTime().toString(Qt::ISODate);
         int fileSize = fileInfo.size();
-        ByteInputStream in(filePath);
-        Compressor compressor(in, out);
-        Key key = compressor.prepare();
-        in.close();
+        auto in = std::make_shared<ByteInputStream>(filePath);
+        inputStreams.push_back(in);
+        compressors.push_back(Compressor(*in, out));
+        Key key = compressors.back().prepare();
+        savedKeys.push_back(key);
         int compressedSize = key.bitCount / 8;
 
         writeStringSizeAndString(fileName);
         writeStringSizeAndString(fileBirthTime);
         out.writeInt(fileSize);
         out.writeInt(compressedSize);
+        emit progress("finish preparing " + filePath);
     }
 }
 
