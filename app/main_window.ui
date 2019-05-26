@@ -160,20 +160,7 @@
          </layout>
         </item>
         <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Expanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>187</height>
-           </size>
-          </property>
-         </spacer>
+         <widget class="QListWidget" name="archivingLogWidget"/>
         </item>
        </layout>
       </widget>
@@ -418,7 +405,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionArchiving">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/images/archive_icon.png</normaloff>:/images/archive_icon.png</iconset>
    </property>
    <property name="text">
@@ -433,7 +420,7 @@
   </action>
   <action name="actionUnarchiving">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/images/unarchive_icon.png</normaloff>:/images/unarchive_icon.png</iconset>
    </property>
    <property name="text">
@@ -448,7 +435,7 @@
   </action>
   <action name="actionViewArchive">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/images/view_icon.png</normaloff>:/images/view_icon.png</iconset>
    </property>
    <property name="text">
@@ -463,6 +450,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

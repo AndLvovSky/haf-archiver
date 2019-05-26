@@ -26,11 +26,15 @@ public slots:
 
     void process();
 
+    void onProgress(QString prog);
+
 signals:
 
     void finished(bool good);
 
     void error(QString err);
+
+    void progress(QString prog);
 
 };
 

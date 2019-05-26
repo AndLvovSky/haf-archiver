@@ -19,9 +19,11 @@ Archiver::Archiver(QStringList filesToArchiveUris, QString destDir, QString dest
 
 void Archiver::process()
 {
+    emit progress("preparing archiving");
     writeFilesInfo();
 
     for (QString filePath: filesToArchiveUris) {
+        emit progress("start compressing: " + filePath);
         ByteInputStream in(filePath);
         Compressor compressor(in, out);
 
@@ -31,9 +33,11 @@ void Archiver::process()
         compressAndWrite(key, compressor);
 
         in.close();
+        emit progress("finish compressing: " + filePath);
     }
 
     out.close();
+    emit progress("finish archiving");
 }
 
 void Archiver::writeFilesInfo()

@@ -71,6 +71,8 @@ public slots:
 
     void unarchivingFinished(bool good);
 
+    void archivingProgress(QString prog);
+
 private:
 
     Ui::MainWindow* ui;

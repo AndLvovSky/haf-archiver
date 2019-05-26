@@ -64,6 +64,7 @@ void MainWindow::on_archiveButton_clicked() {
     worker->moveToThread(thread);
     connect(worker, SIGNAL(error(QString)), this, SLOT(archivingError(QString)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
+    connect(worker, SIGNAL(progress(QString)), this, SLOT(archivingProgress(QString)));
     connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
     connect(worker, SIGNAL(finished(bool)), this, SLOT(archivingFinished(bool)));
     connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
@@ -79,6 +80,11 @@ void MainWindow::archivingFinished(bool good) {
     if (good) {
         ui->statusBar->showMessage("archiving completed", 1000);
     }
+}
+
+void MainWindow::archivingProgress(QString prog) {
+    auto lw = ui->archivingLogWidget;
+    lw->addItem(prog);
 }
 
 void MainWindow::updateReadyToArchive() {

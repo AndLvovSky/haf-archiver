@@ -8,8 +8,10 @@
 #include "compression/key.h"
 #include "compression/compressor.h"
 
-class Archiver
+class Archiver : public QObject
 {
+Q_OBJECT
+
 private:
     QStringList filesToArchiveUris;
     ByteOutputStream out;
@@ -30,6 +32,10 @@ private:
     void writeKey(Key key);
 
     void compressAndWrite(Key key, Compressor compressor);
+
+public:
+signals:
+    void progress(QString prog);
 };
 
 #endif // ARCHIVER_H
