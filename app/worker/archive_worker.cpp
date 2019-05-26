@@ -1,6 +1,8 @@
 #include "archive_worker.h"
 #include "archive/archiver.h"
 
+#include <QDebug>
+
 ArchiveWorker::ArchiveWorker(QStringList filesToArchiveUris,
     QString destDir, QString destFileName) :
     filesToArchiveUris(filesToArchiveUris), destDir(destDir),

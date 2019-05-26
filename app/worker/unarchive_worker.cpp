@@ -7,7 +7,13 @@ UnarchiveWorker::UnarchiveWorker(QString archivePath, QString outputDirPath) :
 UnarchiveWorker::~UnarchiveWorker() {}
 
 void UnarchiveWorker::process() {
-    Unarchiver unarchiver(archivePath, outputDirPath);
-    unarchiver.process();
-    emit finished();
+    try {
+        Unarchiver unarchiver(archivePath, outputDirPath);
+        unarchiver.process();
+    } catch(std::runtime_error err) {
+        emit error(err.what());
+        emit finished(false);
+        return;
+    }
+    emit finished(true);
 }

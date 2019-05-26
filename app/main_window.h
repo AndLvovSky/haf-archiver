@@ -69,7 +69,7 @@ public slots:
 
     void unarchivingError(QString err);
 
-    void unarchivingFinished();
+    void unarchivingFinished(bool good);
 
 private:
 

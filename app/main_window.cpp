@@ -146,9 +146,9 @@ void MainWindow::on_unarchiveButton_clicked() {
     worker->moveToThread(thread);
     connect(worker, SIGNAL(error(QString)), this, SLOT(unarchivingError(QString)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
-    connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(worker, SIGNAL(finished()), this, SLOT(unarchivingFinished()));
-    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+    connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
+    connect(worker, SIGNAL(finished(bool)), this, SLOT(unarchivingFinished(bool)));
+    connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
 }
@@ -157,8 +157,10 @@ void MainWindow::unarchivingError(QString err) {
     ui->statusBar->showMessage(err, 3000);
 }
 
-void MainWindow::unarchivingFinished() {
-    ui->statusBar->showMessage("unarchiving completed", 1000);
+void MainWindow::unarchivingFinished(bool good) {
+    if (good) {
+        ui->statusBar->showMessage("unarchiving completed", 1000);
+    }
 }
 
 void MainWindow::on_actionViewArchive_triggered() {
@@ -184,8 +186,13 @@ void MainWindow::updateReadyToView() {
 
 void MainWindow::on_viewArchiveButton_clicked() {
     QString archivePath = ui->archiveTextView->text();
-    Unarchiver unarchiver(archivePath, "");
-    auto filesInfo = unarchiver.getInfo().filesInfo;
+    std::vector<FileInfo> filesInfo;
+    try {
+        Unarchiver unarchiver(archivePath, "");
+        filesInfo = unarchiver.getInfo().filesInfo;
+    } catch(std::runtime_error err) {
+        ui->statusBar->showMessage(err.what(), 3000);
+    }
 
     auto tw = ui->filesTableWidget;
     QStringList sl;

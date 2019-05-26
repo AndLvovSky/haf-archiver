@@ -85,7 +85,7 @@ void ByteInputStream::readToCache()
     char* data = new char[CACHE_SIZE];
     int response = file.read(data, CACHE_SIZE);
     if (response == -1) {
-        throw new std::runtime_error("Reading from file error");
+        throw std::runtime_error("Reading from file error");
     }
     if (cache != nullptr) {
         delete[] cache;

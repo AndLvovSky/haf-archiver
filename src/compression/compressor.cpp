@@ -26,8 +26,7 @@ void Compressor::findFrequencies() {
 Key Compressor::prepare() {
     findFrequencies();
     if (frequencies.empty()) {
-        return Key(std::make_shared<Node>(
-            0, 0, nullptr, nullptr), 0, 0);
+        return Key(nullptr, 0, 0);
     }
     for (const auto& it : frequencies.toStdMap()) {
         heap.push(std::make_shared<Node>(
