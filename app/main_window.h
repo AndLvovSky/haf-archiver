@@ -65,7 +65,7 @@ public slots:
 
     void archivingError(QString err);
 
-    void archivingFinished();
+    void archivingFinished(bool good);
 
     void unarchivingError(QString err);
 

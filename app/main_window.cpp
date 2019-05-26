@@ -64,19 +64,21 @@ void MainWindow::on_archiveButton_clicked() {
     worker->moveToThread(thread);
     connect(worker, SIGNAL(error(QString)), this, SLOT(archivingError(QString)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
-    connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(worker, SIGNAL(finished()), this, SLOT(archivingFinished()));
-    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+    connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
+    connect(worker, SIGNAL(finished(bool)), this, SLOT(archivingFinished(bool)));
+    connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
 void MainWindow::archivingError(QString err) {
-    ui->statusBar->showMessage(err, 1000);
+    ui->statusBar->showMessage(err, 3000);
 }
 
-void MainWindow::archivingFinished() {
-    ui->statusBar->showMessage("archiving completed", 1000);
+void MainWindow::archivingFinished(bool good) {
+    if (good) {
+        ui->statusBar->showMessage("archiving completed", 1000);
+    }
 }
 
 void MainWindow::updateReadyToArchive() {
@@ -152,7 +154,7 @@ void MainWindow::on_unarchiveButton_clicked() {
 }
 
 void MainWindow::unarchivingError(QString err) {
-    ui->statusBar->showMessage(err, 1000);
+    ui->statusBar->showMessage(err, 3000);
 }
 
 void MainWindow::unarchivingFinished() {

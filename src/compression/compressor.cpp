@@ -25,6 +25,10 @@ void Compressor::findFrequencies() {
 
 Key Compressor::prepare() {
     findFrequencies();
+    if (frequencies.empty()) {
+        return Key(std::make_shared<Node>(
+            0, 0, nullptr, nullptr), 0, 0);
+    }
     for (const auto& it : frequencies.toStdMap()) {
         heap.push(std::make_shared<Node>(
             it.second, it.first, nullptr, nullptr, true));
@@ -64,6 +68,12 @@ void Compressor::findCode(Node::NodePtr node, const QString& code) {
 void Compressor::compress() {
     if (key == nullptr) {
         throw std::runtime_error("Compressing is not prepared!");
+    }
+    if (frequencies.empty()) {
+        qInfo() << "new bit count = " << 0;
+        qInfo() << "new byte count = " << 0;
+        qInfo() << "compression ratio(%) = " << 0;
+        return;
     }
     auto byteCount = key->bitCount / 8 +
         (key->bitCount % 8 ? 1 : 0);

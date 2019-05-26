@@ -9,7 +9,13 @@ ArchiveWorker::ArchiveWorker(QStringList filesToArchiveUris,
 ArchiveWorker::~ArchiveWorker() {}
 
 void ArchiveWorker::process() {
-    Archiver archiver(filesToArchiveUris, destDir, destFileName);
-    archiver.process();
-    emit finished();
+    try {
+        Archiver archiver(filesToArchiveUris, destDir, destFileName);
+        archiver.process();
+    } catch(std::runtime_error err) {
+        emit error(err.what());
+        emit finished(false);
+        return;
+    }
+    emit finished(true);
 }

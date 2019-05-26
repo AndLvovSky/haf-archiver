@@ -28,7 +28,7 @@ public slots:
 
 signals:
 
-    void finished();
+    void finished(bool good);
 
     void error(QString err);
 

@@ -9,17 +9,23 @@ Key Key::fromString(QString s)
 {
     QString oldBytesCountS;
     int i = 0;
-    while(s[i] != '/') {
+    while(i < s.size() && s[i] != '/') {
         oldBytesCountS.append(s[i]);
         i++;
     } i++;
+    if (i == s.size() + 1) {
+        throw std::runtime_error("Invalid key format");
+    }
     //qInfo() << oldBytesCountS;
 
     QString bitsCountS;
-    while(s[i] != '/') {
+    while(i < s.size() && s[i] != '/') {
         bitsCountS.append(s[i]);
         i++;
     } i++;
+    if (i == s.size() + 1) {
+        throw std::runtime_error("Invalid key format");
+    }
    // qInfo() << bitsCountS;
 
     s = s.mid(i);
@@ -113,6 +119,7 @@ CharWithSize Key::serialize(Node::NodePtr node)
         return c;
     }
 
+    delete[] c.c;
     c.c = node->serialize().c;
     c.push_back(serialize(node->left));
     c.push_back(serialize(node->right));
@@ -121,6 +128,9 @@ CharWithSize Key::serialize(Node::NodePtr node)
 
 Key Key::deserialize(CharWithSize c)
 {
+    if (c.c == nullptr) {
+        throw std::runtime_error("CharWithSize c is null in Key::deserialize");
+    }
     // get 2 numbers
     int oldByteCount;
     memcpy(&oldByteCount, c.c, sizeof(int));
@@ -135,6 +145,9 @@ Key Key::deserialize(CharWithSize c)
     for (int k = 0; k < nodesCount; k++) {
         char* node = new char[nodeSize];
         for (int i = 0; i < nodeSize; i++) {
+            if (offset + k * nodeSize + i >= c.size) {
+                throw std::runtime_error("CharWithSize index out of range");
+            }
             node[i] = c.c[offset + k * nodeSize + i];
         }
         nodes.push_back(node);
@@ -162,6 +175,6 @@ Node::NodePtr Key::deserialize2()
     node->left = deserialize2();
     node->right = deserialize2();
     return node;
-    return nullptr;
+//    return nullptr; - never executed?
 }
 

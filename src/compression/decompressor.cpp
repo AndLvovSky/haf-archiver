@@ -14,13 +14,16 @@ void Decompressor::decompress() {
 
 char Decompressor::getByte() {
     auto node = key.root;
-    while (!node->isLeaf) {
+    while (node && !node->isLeaf) {
         bool bit = bitReader.read();
         if (bit) {
             node = node->right;
         } else {
             node = node->left;
         }
+    }
+    if (!node) {
+        throw std::runtime_error("Wrong key in Decompressor::getByte");
     }
     return node->character;
 }
