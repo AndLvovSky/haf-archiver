@@ -92,5 +92,8 @@ void ByteInputStream::readToCache()
         throw std::runtime_error("Error when reading from file " +
                                      file.fileName().toStdString());
     }
+    if (cache != nullptr) {
+        delete[] cache;
+    }
     cache = data;
 }
