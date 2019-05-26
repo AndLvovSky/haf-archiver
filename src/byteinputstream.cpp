@@ -86,7 +86,7 @@ void ByteInputStream::readToCache()
     char* data = new char[CACHE_SIZE];
     int response = file.read(data, CACHE_SIZE);
     if (response == -1) {
-        throw new std::runtime_error("Error when reading from file " +
+        throw std::runtime_error("Error when reading from file " +
                                      file.fileName().toStdString());
     }
     cache = data;
