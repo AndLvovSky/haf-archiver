@@ -11,7 +11,7 @@ ByteInputStream::ByteInputStream(QString filePath)
     if (file.open(QIODevice::ReadOnly)) {
         readToCache();
     } else {
-        throw std::runtime_error("Can not open file!");
+        throw std::runtime_error("Can not open file " + file.fileName().toStdString());
     }
 }
 
@@ -24,9 +24,13 @@ void ByteInputStream::close()
 }
 
 void ByteInputStream::reset() {
-    file.seek(resetOffset);
-    readToCache();
-    curCounter = 0;
+    if (file.seek(resetOffset)) {
+        readToCache();
+        curCounter = 0;
+    } else {
+        throw std::runtime_error("file.seek() returned false on file " +
+                                 file.fileName().toStdString());
+    }
 }
 
 Data::SizeType ByteInputStream::byteCount() const {
@@ -85,10 +89,8 @@ void ByteInputStream::readToCache()
     char* data = new char[CACHE_SIZE];
     int response = file.read(data, CACHE_SIZE);
     if (response == -1) {
-        throw std::runtime_error("Reading from file error");
-    }
-    if (cache != nullptr) {
-        delete[] cache;
+        throw std::runtime_error("Error when reading from file " +
+                                     file.fileName().toStdString());
     }
     cache = data;
 }
