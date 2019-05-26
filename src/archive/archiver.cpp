@@ -24,8 +24,9 @@ void Archiver::process()
     emit progress("process archiving");
 
     for (int i = 0; i < filesToArchiveUris.size(); i++) {
-        QString filePath = filesToArchiveUris[i];
-        emit progress("start compressing: " + filePath);
+        filePath = filesToArchiveUris[i];
+        fileSize = savedFileSizes[i];
+        emit progress("compressing: " + filePath);
 
         writeKey(savedKeys[i]);
         compressAndWrite(savedKeys[i], compressors[i]);
@@ -43,16 +44,21 @@ void Archiver::writeFilesInfo()
     out.writeInt(filesToArchiveUris.size());
 
     for (QString filePath: filesToArchiveUris) {
-        emit progress("start preparing " + filePath);
+        this->filePath = filePath;
+        emit progress("preparing " + filePath);
         QFileInfo fileInfo(filePath);
         QString fileName = fileInfo.completeBaseName().append('.')
                 .append(fileInfo.completeSuffix());
         QString fileBirthTime = fileInfo.birthTime().toString(Qt::ISODate);
-        int fileSize = fileInfo.size();
+        fileSize = fileInfo.size();
+        savedFileSizes.push_back(fileSize);
         auto in = std::make_shared<ByteInputStream>(filePath);
         inputStreams.push_back(in);
-        compressors.push_back(Compressor(*in, out));
-        Key key = compressors.back().prepare();
+        auto compressor = std::make_shared<Compressor>(*in, out);
+        compressors.push_back(compressor);
+        connect(compressor.get(), SIGNAL(prepared(long long)), this, SLOT(onPreparedChange(long long)));
+        connect(compressor.get(), SIGNAL(compressed(long long)), this, SLOT(onCompressedChange(long long)));
+        Key key = compressor->prepare();
         savedKeys.push_back(key);
         int compressedSize = key.bitCount / 8;
 
@@ -78,10 +84,22 @@ void Archiver::writeKey(Key key)
     delete [] keyS.c;
 }
 
-void Archiver::compressAndWrite(Key key, Compressor compressor)
+void Archiver::compressAndWrite(Key key, std::shared_ptr<Compressor> compressor)
 {
     int compressedSize = key.bitCount / 8;
     if (key.bitCount % 8 != 0) compressedSize++;
     out.writeInt(compressedSize);
-    if(compressedSize != 0) compressor.compress();
+    if(compressedSize != 0) compressor->compress();
+}
+
+void Archiver::onPreparedChange(long long bytes) {
+    emit progressInLine("preparing " +
+        QString::number(bytes) + "/" + QString::number(fileSize) +
+        " " + filePath, 0);
+}
+
+void Archiver::onCompressedChange(long long bytes) {
+    emit progressInLine("compressing " +
+        QString::number(bytes) + "/" + QString::number(fileSize) +
+        " " + filePath, 0);
 }

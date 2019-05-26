@@ -55,6 +55,8 @@ private slots:
 
     void on_viewArchiveButton_clicked();
 
+    void on_clearArchivingButton_clicked();
+
 public:
 
     explicit MainWindow(QWidget* parent = nullptr);
@@ -72,6 +74,8 @@ public slots:
     void unarchivingFinished(bool good);
 
     void archivingProgress(QString prog);
+
+    void progressInLine(QString msg, int line);
 
 private:
 

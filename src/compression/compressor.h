@@ -9,14 +9,19 @@
 #include <vector>
 #include <QMap>
 #include <queue>
+#include <QObject>
 
 /**
  * @brief The Compressor class used to compress bytes that are
  * comming from ByteIstream and passes compressed bytes to ByteOstream.
  */
-class Compressor {
+class Compressor : public QObject {
+
+Q_OBJECT
 
 private:
+
+    static const int UPDATE_FREQUENCY = 10000;
 
     /** Node pointer. */
     typedef std::shared_ptr<Node> NodePtr;
@@ -87,6 +92,12 @@ public:
      * Reads bytes from ByteIstream and passes compressed bytes to ByteOstream.
      */
     void compress();
+
+signals:
+
+    void prepared(long long bytes);
+
+     void compressed(long long bytes);
 
 };
 

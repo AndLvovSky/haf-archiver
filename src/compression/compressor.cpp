@@ -17,10 +17,16 @@ bool Compressor::Comparator::operator () (Node::NodePtr a, Node::NodePtr b) {
 
 void Compressor::findFrequencies() {
     in.reset();
-    for (int i = 0; i < in.byteCount(); i++) {
+    auto byteCount = in.byteCount();
+    emit prepared(0);
+    for (auto i = 0; i < byteCount; i++) {
         char ch = in.getByte();
         frequencies[ch]++;
+        if (i % UPDATE_FREQUENCY == 0) {
+            emit prepared(i);
+        }
     }
+    emit prepared(byteCount);
 }
 
 Key Compressor::prepare() {
@@ -83,12 +89,18 @@ void Compressor::compress() {
         (float)in.byteCount() * 10000) / 100;
     in.reset();
     BitWriter bitWriter(out);
-    for (int i = 0; i < in.byteCount(); i++) {
+    auto oldByteCount = in.byteCount();
+    emit compressed(0);
+    for (auto i = 0; i < oldByteCount; i++) {
         char ch = in.getByte();
         for (auto ch: haffmanCode[ch]) {
             bitWriter.write(ch == '1');
         }
+        if (i % UPDATE_FREQUENCY == 0) {
+            emit compressed(i);
+        }
     }
+    emit compressed(oldByteCount);
     bitWriter.flush();
 }
 
