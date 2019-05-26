@@ -65,10 +65,12 @@ void MainWindow::on_archiveButton_clicked() {
     connect(worker, SIGNAL(error(QString)), this, SLOT(archivingError(QString)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
     connect(worker, SIGNAL(progress(QString)), this, SLOT(archivingProgress(QString)));
+    connect(worker, SIGNAL(progressInLine(QString, int)), this, SLOT(progressInLine(QString, int)));
     connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
     connect(worker, SIGNAL(finished(bool)), this, SLOT(archivingFinished(bool)));
     connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    ui->clearArchivingButton->setEnabled(false);
     thread->start();
 }
 
@@ -80,11 +82,17 @@ void MainWindow::archivingFinished(bool good) {
     if (good) {
         ui->statusBar->showMessage("archiving completed", 1000);
     }
+    ui->clearArchivingButton->setEnabled(true);
 }
 
 void MainWindow::archivingProgress(QString prog) {
     auto lw = ui->archivingLogWidget;
     lw->addItem(prog);
+}
+
+void MainWindow::progressInLine(QString msg, int line) {
+    auto lw = ui->archivingLogWidget;
+    lw->item(lw->count() - 1)->setText(msg);
 }
 
 void MainWindow::updateReadyToArchive() {
@@ -218,4 +226,9 @@ void MainWindow::on_viewArchiveButton_clicked() {
         tw->setItem(i, 2, new QTableWidgetItem(QString::number(cur.compressedSize)));
         tw->setItem(i, 3, new QTableWidgetItem(cur.birthTime.toString()));
     }
+}
+
+void MainWindow::on_clearArchivingButton_clicked() {
+    auto lw = ui->archivingLogWidget;
+    lw->clear();
 }

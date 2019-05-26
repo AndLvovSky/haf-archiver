@@ -16,9 +16,12 @@ Q_OBJECT
 private:
     QStringList filesToArchiveUris;
     ByteOutputStream out;
-    std::vector<Compressor> compressors;
+    std::vector<std::shared_ptr<Compressor>> compressors;
     std::vector<Key> savedKeys;
     std::vector<std::shared_ptr<ByteInputStream>> inputStreams;
+    QString filePath;
+    long long fileSize;
+    std::vector<long long> savedFileSizes;
 
 public:
     Archiver(QStringList filesToArchiveUris, QString destDir, QString destFileName);
@@ -35,11 +38,19 @@ private:
 
     void writeKey(Key key);
 
-    void compressAndWrite(Key key, Compressor compressor);
+    void compressAndWrite(Key key, std::shared_ptr<Compressor> compressor);
 
-public:
+public slots:
+
+    void onPreparedChange(long long bytes);
+
+    void onCompressedChange(long long bytes);
+
 signals:
     void progress(QString prog);
+
+    void progressInLine(QString msg, int line);
+
 };
 
 #endif // ARCHIVER_H

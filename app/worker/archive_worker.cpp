@@ -14,6 +14,8 @@ void ArchiveWorker::process() {
     try {
         Archiver archiver(filesToArchiveUris, destDir, destFileName);
         connect(&archiver, SIGNAL(progress(QString)), this, SLOT(onProgress(QString)));
+        connect(&archiver, SIGNAL(progressInLine(QString, int)),
+            this, SLOT(onProgressInLine(QString, int)));
         archiver.process();
     } catch(std::runtime_error err) {
         emit error(err.what());
@@ -25,4 +27,8 @@ void ArchiveWorker::process() {
 
 void ArchiveWorker::onProgress(QString prog) {
     emit progress(prog);
+}
+
+void ArchiveWorker::onProgressInLine(QString msg, int line) {
+    emit progressInLine(msg, line);
 }
