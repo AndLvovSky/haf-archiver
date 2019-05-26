@@ -3,9 +3,11 @@
 
 #include <QDebug>
 
+int ArchiveWorker::nextId = 0;
+
 ArchiveWorker::ArchiveWorker(QStringList filesToArchiveUris,
     QString destDir, QString destFileName) :
-    filesToArchiveUris(filesToArchiveUris), destDir(destDir),
+    id(nextId++), filesToArchiveUris(filesToArchiveUris), destDir(destDir),
     destFileName(destFileName) {}
 
 ArchiveWorker::~ArchiveWorker() {}
@@ -18,17 +20,21 @@ void ArchiveWorker::process() {
             this, SLOT(onProgressInLine(QString, int)));
         archiver.process();
     } catch(std::runtime_error err) {
-        emit error(err.what());
-        emit finished(false);
+        emit error(err.what(), id);
+        emit finished(false, id);
         return;
     }
-    emit finished(true);
+    emit finished(true, id);
 }
 
 void ArchiveWorker::onProgress(QString prog) {
-    emit progress(prog);
+    emit progress(prog, id);
 }
 
 void ArchiveWorker::onProgressInLine(QString msg, int line) {
-    emit progressInLine(msg, line);
+    emit progressInLine(msg, id);
+}
+
+int ArchiveWorker::getId() {
+    return id;
 }

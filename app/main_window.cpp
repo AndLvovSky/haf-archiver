@@ -56,43 +56,53 @@ void MainWindow::on_archiveButton_clicked() {
     QString archiveName = ui->archiveNameLineEdit->text();
 
     ui->archiveButton->setEnabled(false);
-    ui->statusBar->showMessage("archiving started", 1000);
 
     QThread* thread = new QThread;
     ArchiveWorker* worker = new ArchiveWorker(
         filesToArchiveUris, archiveDest, archiveName);
     worker->moveToThread(thread);
-    connect(worker, SIGNAL(error(QString)), this, SLOT(archivingError(QString)));
+    connect(worker, SIGNAL(error(QString, int)), this, SLOT(archivingError(QString, int)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
-    connect(worker, SIGNAL(progress(QString)), this, SLOT(archivingProgress(QString)));
+    connect(worker, SIGNAL(progress(QString, int)), this, SLOT(archivingProgress(QString, int)));
     connect(worker, SIGNAL(progressInLine(QString, int)), this, SLOT(archivingProgressInLine(QString, int)));
-    connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
-    connect(worker, SIGNAL(finished(bool)), this, SLOT(archivingFinished(bool)));
-    connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
+    connect(worker, SIGNAL(finished(bool, int)), thread, SLOT(quit()));
+    connect(worker, SIGNAL(finished(bool, int)), this, SLOT(archivingFinished(bool, int)));
+    connect(worker, SIGNAL(finished(bool, int)), worker, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     ui->clearArchivingButton->setEnabled(false);
+    runningArchiveWorkers++;
+    ui->statusBar->showMessage(
+        "[" + QString::number(worker->getId()) + "] " + "archiving started", 1000);
     thread->start();
 }
 
-void MainWindow::archivingError(QString err) {
-    ui->statusBar->showMessage(err, 3000);
+void MainWindow::archivingError(QString err, int workerId) {
+    ui->statusBar->showMessage(
+        "[" + QString::number(workerId) + "] " + err, LONG_STATUS_TIME);
 }
 
-void MainWindow::archivingFinished(bool good) {
+void MainWindow::archivingFinished(bool good, int workerId) {
     if (good) {
-        ui->statusBar->showMessage("archiving completed", 1000);
+        ui->statusBar->showMessage(
+            "[" + QString::number(workerId) + "] "
+            + "archiving completed", SHORT_STATUS_TIME);
     }
-    ui->clearArchivingButton->setEnabled(true);
+    runningArchiveWorkers--;
+    if (!runningArchiveWorkers) {
+        ui->clearArchivingButton->setEnabled(true);
+    }
 }
 
-void MainWindow::archivingProgress(QString prog) {
+void MainWindow::archivingProgress(QString prog, int workerId) {
     auto lw = ui->archivingLogWidget;
-    lw->addItem(prog);
+    lw->addItem("[" + QString::number(workerId) + "] " + prog);
+    archiveWorkerLine[workerId] = lw->count() - 1;
 }
 
-void MainWindow::archivingProgressInLine(QString msg, int line) {
+void MainWindow::archivingProgressInLine(QString msg, int workerId) {
     auto lw = ui->archivingLogWidget;
-    lw->item(lw->count() - 1)->setText(msg);
+    lw->item(archiveWorkerLine[workerId])->setText(
+        "[" + QString::number(workerId) + "] " + msg);
 }
 
 void MainWindow::unarchivingProgress(QString prog) {

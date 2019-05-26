@@ -9,6 +9,10 @@ class ArchiveWorker : public QObject {
 
 private:
 
+    static int nextId;
+
+    int id;
+
     QStringList filesToArchiveUris;
 
     QString destDir;
@@ -22,6 +26,8 @@ public:
 
     ~ArchiveWorker();
 
+    int getId();
+
 public slots:
 
     void process();
@@ -32,13 +38,13 @@ public slots:
 
 signals:
 
-    void finished(bool good);
+    void finished(bool good, int workerId);
 
-    void error(QString err);
+    void error(QString err, int workerId);
 
-    void progress(QString prog);
+    void progress(QString prog, int workerId);
 
-    void progressInLine(QString msg, int line);
+    void progressInLine(QString msg, int workerId);
 
 };
 

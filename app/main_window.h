@@ -21,6 +21,14 @@ public:
 
 private:
 
+    static const int SHORT_STATUS_TIME = 1500;
+
+    static const int LONG_STATUS_TIME = 4000;
+
+    std::map<int, int> archiveWorkerLine;
+
+    int runningArchiveWorkers = 0;
+
     void updateReadyToArchive();
 
     void updateReadyToUnarchive();
@@ -67,17 +75,17 @@ public:
 
 public slots:
 
-    void archivingError(QString err);
+    void archivingError(QString err, int workerId);
 
-    void archivingFinished(bool good);
+    void archivingFinished(bool good, int workerId);
 
     void unarchivingError(QString err);
 
     void unarchivingFinished(bool good);
 
-    void archivingProgress(QString prog);
+    void archivingProgress(QString prog, int workerId);
 
-    void archivingProgressInLine(QString msg, int line);
+    void archivingProgressInLine(QString msg, int workerId);
 
     void unarchivingProgress(QString prog);
 
