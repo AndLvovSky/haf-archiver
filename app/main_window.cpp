@@ -72,7 +72,8 @@ void MainWindow::on_archiveButton_clicked() {
     ui->clearArchivingButton->setEnabled(false);
     runningArchiveWorkers++;
     ui->statusBar->showMessage(
-        "[" + QString::number(worker->getId()) + "] " + "archiving started", 1000);
+        "[" + QString::number(worker->getId()) + "] " +
+        "archiving started", SHORT_STATUS_TIME);
     thread->start();
 }
 
@@ -105,14 +106,16 @@ void MainWindow::archivingProgressInLine(QString msg, int workerId) {
         "[" + QString::number(workerId) + "] " + msg);
 }
 
-void MainWindow::unarchivingProgress(QString prog) {
+void MainWindow::unarchivingProgress(QString prog, int workerId) {
     auto lw = ui->unarchivingLogWidget;
-    lw->addItem(prog);
+    lw->addItem("[" + QString::number(workerId) + "] " + prog);
+    unarchiveWorkerLine[workerId] = lw->count() - 1;
 }
 
-void MainWindow::unarchivingProgressInLine(QString msg, int line) {
+void MainWindow::unarchivingProgressInLine(QString msg, int workerId) {
     auto lw = ui->unarchivingLogWidget;
-    lw->item(lw->count() - 1)->setText(msg);
+    lw->item(unarchiveWorkerLine[workerId])->setText(
+        "[" + QString::number(workerId) + "] " + msg);
 }
 
 void MainWindow::updateReadyToArchive() {
@@ -173,32 +176,41 @@ void MainWindow::on_unarchiveButton_clicked() {
     ui->unarchiveButton->setEnabled(false);
     QString s = ui->archiveText->text();
     QString s2 = ui->saveDirectoryText_2->text();
-    ui->statusBar->showMessage("unarchiving started", 1000);
 
     QThread* thread = new QThread;
     UnarchiveWorker* worker = new UnarchiveWorker(s, s2);
     worker->moveToThread(thread);
-    connect(worker, SIGNAL(error(QString)), this, SLOT(unarchivingError(QString)));
+    connect(worker, SIGNAL(error(QString, int)), this, SLOT(unarchivingError(QString, int)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
-    connect(worker, SIGNAL(progress(QString)), this, SLOT(unarchivingProgress(QString)));
+    connect(worker, SIGNAL(progress(QString, int)), this, SLOT(unarchivingProgress(QString, int)));
     connect(worker, SIGNAL(progressInLine(QString, int)), this, SLOT(unarchivingProgressInLine(QString, int)));
-    connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
-    connect(worker, SIGNAL(finished(bool)), this, SLOT(unarchivingFinished(bool)));
-    connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
+    connect(worker, SIGNAL(finished(bool, int)), thread, SLOT(quit()));
+    connect(worker, SIGNAL(finished(bool, int)), this, SLOT(unarchivingFinished(bool, int)));
+    connect(worker, SIGNAL(finished(bool, int)), worker, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     ui->clearUnarchivingButton->setEnabled(false);
+    runningUnarchiveWorkers++;
+    ui->statusBar->showMessage(
+        "[" + QString::number(worker->getId()) + "] " +
+        "unarchiving started", SHORT_STATUS_TIME);
     thread->start();
 }
 
-void MainWindow::unarchivingError(QString err) {
-    ui->statusBar->showMessage(err, 3000);
+void MainWindow::unarchivingError(QString err, int workerId) {
+    ui->statusBar->showMessage(
+        "[" + QString::number(workerId) + "] " + err, LONG_STATUS_TIME);
 }
 
-void MainWindow::unarchivingFinished(bool good) {
+void MainWindow::unarchivingFinished(bool good, int workerId) {
     if (good) {
-        ui->statusBar->showMessage("unarchiving completed", 1000);
+        ui->statusBar->showMessage(
+            "[" + QString::number(workerId) + "] " +
+            "unarchiving completed", SHORT_STATUS_TIME);
     }
-    ui->clearUnarchivingButton->setEnabled(true);
+    runningUnarchiveWorkers--;
+    if (!runningUnarchiveWorkers) {
+        ui->clearUnarchivingButton->setEnabled(true);
+    }
 }
 
 void MainWindow::on_actionViewArchive_triggered() {

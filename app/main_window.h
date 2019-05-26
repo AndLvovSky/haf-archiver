@@ -27,7 +27,11 @@ private:
 
     std::map<int, int> archiveWorkerLine;
 
+    std::map<int, int> unarchiveWorkerLine;
+
     int runningArchiveWorkers = 0;
+
+    int runningUnarchiveWorkers = 0;
 
     void updateReadyToArchive();
 
@@ -79,17 +83,17 @@ public slots:
 
     void archivingFinished(bool good, int workerId);
 
-    void unarchivingError(QString err);
+    void unarchivingError(QString err, int workerId);
 
-    void unarchivingFinished(bool good);
+    void unarchivingFinished(bool good, int workerId);
 
     void archivingProgress(QString prog, int workerId);
 
     void archivingProgressInLine(QString msg, int workerId);
 
-    void unarchivingProgress(QString prog);
+    void unarchivingProgress(QString prog, int workerId);
 
-    void unarchivingProgressInLine(QString msg, int line);
+    void unarchivingProgressInLine(QString msg, int workerId);
 
 private:
 

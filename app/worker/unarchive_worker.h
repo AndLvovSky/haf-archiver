@@ -9,6 +9,10 @@ class UnarchiveWorker : public QObject {
 
 private:
 
+    static int nextId;
+
+    int id;
+
     QString archivePath;
 
     QString outputDirPath;
@@ -18,6 +22,8 @@ public:
     UnarchiveWorker(QString archivePath, QString outputDirPath);
 
     ~UnarchiveWorker();
+
+    int getId();
 
 public slots:
 
@@ -29,13 +35,13 @@ public slots:
 
 signals:
 
-    void finished(bool good);
+    void finished(bool good, int workerId);
 
-    void error(QString err);
+    void error(QString err, int workerId);
 
-    void progress(QString prog);
+    void progress(QString prog, int workerId);
 
-    void progressInLine(QString msg, int line);
+    void progressInLine(QString msg, int workerId);
 
 };
 
