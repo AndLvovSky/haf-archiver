@@ -1,5 +1,5 @@
 #include "nodetest.h"
-#include "charwithsize.h"
+#include "util/charwithsize.h"
 
 NodeTest::NodeTest()
 {

@@ -1,8 +1,8 @@
 #include "test_compression.h"
 #include "compression/compressor.h"
 #include "compression/decompressor.h"
-#include "ram_byte_istream.h"
-#include "ram_byte_ostream.h"
+#include "stream/ram/ram_byte_istream.h"
+#include "stream/ram/ram_byte_ostream.h"
 
 TestCompression::TestCompression() {}
 

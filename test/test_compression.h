@@ -3,7 +3,7 @@
 
 #include <QtTest>
 
-#include "data.h"
+#include "util/data.h"
 
 class TestCompression : public QObject {
 

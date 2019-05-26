@@ -2,8 +2,8 @@
 #define ARCHIVERUNARCHIVERTEST_H
 
 #include <QtTest>
-#include <archiver.h>
-#include <unarchiver.h>
+#include <archive/archiver.h>
+#include <archive/unarchiver.h>
 
 class ArchiverUnarchiverTest: public QObject {
 

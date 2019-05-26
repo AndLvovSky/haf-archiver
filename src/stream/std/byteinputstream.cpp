@@ -7,6 +7,7 @@
 
 ByteInputStream::ByteInputStream(QString filePath)
     : file(filePath) {
+    cache = nullptr;
     fileSize = file.size();
     if (file.open(QIODevice::ReadOnly)) {
         readToCache();
