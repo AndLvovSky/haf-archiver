@@ -5,15 +5,20 @@
 #include "stream/byte_ostream.h"
 #include "bit_reader.h"
 #include "key.h"
+#include <QObject>
 
 /**
  * @brief The Decompressor class used to decompress bytes that are
  * comming from ByteIstream using specified key and
  * passes decompressed bytes to ByteOstream.
  */
-class Decompressor {
+class Decompressor : public QObject {
+
+Q_OBJECT
 
 private:
+
+    static const int UPDATE_FREQUENCY = 10000;
 
     ByteIstream& in; /**< Bytes reading stream */
 
@@ -44,6 +49,10 @@ public:
      * bytes to ByteOstream.
      */
     void decompress();
+
+signals:
+
+    void decompressed(long long bytes);
 
 };
 

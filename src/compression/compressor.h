@@ -97,7 +97,7 @@ signals:
 
     void prepared(long long bytes);
 
-     void compressed(long long bytes);
+    void compressed(long long bytes);
 
 };
 

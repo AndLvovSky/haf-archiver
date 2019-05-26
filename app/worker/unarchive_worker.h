@@ -23,11 +23,19 @@ public slots:
 
     void process();
 
+    void onProgress(QString prog);
+
+    void onProgressInLine(QString msg, int line);
+
 signals:
 
     void finished(bool good);
 
     void error(QString err);
+
+    void progress(QString prog);
+
+    void progressInLine(QString msg, int line);
 
 };
 

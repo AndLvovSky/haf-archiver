@@ -6,10 +6,15 @@ Decompressor::Decompressor(ByteIstream& in, ByteOstream& out,
 
 void Decompressor::decompress() {
     in.reset();
+    emit decompressed(0);
     for (int i = 0; i < key.oldByteCount; i++) {
         char ch = getByte();
         out.putByte(ch);
+        if (i % UPDATE_FREQUENCY == 0) {
+            emit decompressed(i);
+        }
     }
+    emit decompressed(key.oldByteCount);
 }
 
 char Decompressor::getByte() {

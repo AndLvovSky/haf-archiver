@@ -65,7 +65,7 @@ void MainWindow::on_archiveButton_clicked() {
     connect(worker, SIGNAL(error(QString)), this, SLOT(archivingError(QString)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
     connect(worker, SIGNAL(progress(QString)), this, SLOT(archivingProgress(QString)));
-    connect(worker, SIGNAL(progressInLine(QString, int)), this, SLOT(progressInLine(QString, int)));
+    connect(worker, SIGNAL(progressInLine(QString, int)), this, SLOT(archivingProgressInLine(QString, int)));
     connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
     connect(worker, SIGNAL(finished(bool)), this, SLOT(archivingFinished(bool)));
     connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
@@ -90,8 +90,18 @@ void MainWindow::archivingProgress(QString prog) {
     lw->addItem(prog);
 }
 
-void MainWindow::progressInLine(QString msg, int line) {
+void MainWindow::archivingProgressInLine(QString msg, int line) {
     auto lw = ui->archivingLogWidget;
+    lw->item(lw->count() - 1)->setText(msg);
+}
+
+void MainWindow::unarchivingProgress(QString prog) {
+    auto lw = ui->unarchivingLogWidget;
+    lw->addItem(prog);
+}
+
+void MainWindow::unarchivingProgressInLine(QString msg, int line) {
+    auto lw = ui->unarchivingLogWidget;
     lw->item(lw->count() - 1)->setText(msg);
 }
 
@@ -160,10 +170,13 @@ void MainWindow::on_unarchiveButton_clicked() {
     worker->moveToThread(thread);
     connect(worker, SIGNAL(error(QString)), this, SLOT(unarchivingError(QString)));
     connect(thread, SIGNAL(started()), worker, SLOT(process()));
+    connect(worker, SIGNAL(progress(QString)), this, SLOT(unarchivingProgress(QString)));
+    connect(worker, SIGNAL(progressInLine(QString, int)), this, SLOT(unarchivingProgressInLine(QString, int)));
     connect(worker, SIGNAL(finished(bool)), thread, SLOT(quit()));
     connect(worker, SIGNAL(finished(bool)), this, SLOT(unarchivingFinished(bool)));
     connect(worker, SIGNAL(finished(bool)), worker, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    ui->clearUnarchivingButton->setEnabled(false);
     thread->start();
 }
 
@@ -175,6 +188,7 @@ void MainWindow::unarchivingFinished(bool good) {
     if (good) {
         ui->statusBar->showMessage("unarchiving completed", 1000);
     }
+    ui->clearUnarchivingButton->setEnabled(true);
 }
 
 void MainWindow::on_actionViewArchive_triggered() {
@@ -230,5 +244,10 @@ void MainWindow::on_viewArchiveButton_clicked() {
 
 void MainWindow::on_clearArchivingButton_clicked() {
     auto lw = ui->archivingLogWidget;
+    lw->clear();
+}
+
+void MainWindow::on_clearUnarchivingButton_clicked() {
+    auto lw = ui->unarchivingLogWidget;
     lw->clear();
 }

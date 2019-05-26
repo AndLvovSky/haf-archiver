@@ -15,9 +15,13 @@ Unarchiver::Unarchiver(QString archivePath, QString outputDirPath)
 }
 
 void Unarchiver::process(){
+    emit progress("process unarchiving");
     for (auto fileInfo: info.filesInfo) {
         qInfo() << "Unarchiver: processing" << fileInfo.name;
+        filePath = fileInfo.name;
+        emit progress("decompressing " + filePath);
         Key key = Key::deserialize(getKey(in));
+        fileSize = key.oldByteCount;
 
         // reading compressed data size and setting up the archive stream
         int dataSize = in.readInt();
@@ -29,10 +33,12 @@ void Unarchiver::process(){
         filePath.append('/').append(fileInfo.name);
         ByteOutputStream out(filePath, ByteOutputStream::WRITE_NEW);
         Decompressor decompressor(in, out, key);
+        connect(&decompressor, SIGNAL(decompressed(long long)), this, SLOT(onDecompressedChange(long long)));
         decompressor.decompress();
         bytesCounter += dataSize;
         qInfo() << "unarchived " + fileInfo.name + " successfully!";
         out.close();
+        emit progress("finish decompressing: " + filePath);
     }
     in.close();
 }
@@ -85,5 +91,11 @@ CharWithSize Unarchiver::getKey(ByteInputStream &in)
     keyC.c = in.read(keyLength);
     bytesCounter += keyLength;
     return keyC;
+}
+
+void Unarchiver::onDecompressedChange(long long bytes) {
+    emit progressInLine("decompressing " +
+        QString::number(bytes) + "/" + QString::number(fileSize) +
+        " " + filePath, 0);
 }
 

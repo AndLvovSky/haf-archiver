@@ -9,11 +9,15 @@
 #include "stream/std/byteoutputstream.h"
 #include "compression/compressor.h"
 #include "util/charwithsize.h"
+#include <QObject>
 
 using namespace std;
 
-class Unarchiver
+class Unarchiver : public QObject
 {
+
+Q_OBJECT
+
 private:
     QString outputDirPath;
 
@@ -26,6 +30,10 @@ private:
     int bytesCounter = 0;
 
     ByteInputStream in;
+
+    QString filePath;
+
+    long long fileSize;
 
 public:
     Unarchiver(QString archivePath, QString outputDirPath);
@@ -42,6 +50,16 @@ private:
     void readInfo();
 
     CharWithSize getKey(ByteInputStream &in);
+
+public slots:
+
+    void onDecompressedChange(long long bytes);
+
+signals:
+    void progress(QString prog);
+
+    void progressInLine(QString msg, int line);
+
 };
 
 #endif // UNARCHIVER_H
