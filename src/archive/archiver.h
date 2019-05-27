@@ -9,12 +9,20 @@
 #include "compression/key.h"
 #include "compression/compressor.h"
 
+/**
+ * @brief The Archiver class compresses the specified files and
+ * writes them to the output archive.
+ */
 class Archiver : public QObject
 {
-Q_OBJECT
+
+    Q_OBJECT
 
 private:
     QStringList filesToArchiveUris;
+    /**
+     * @brief out output file stream
+     */
     ByteOutputStream out;
     std::vector<std::shared_ptr<Compressor>> compressors;
     std::vector<Key> savedKeys;
@@ -24,20 +32,44 @@ private:
     std::vector<long long> savedFileSizes;
 
 public:
+    /**
+     * Archiver constructor.
+     * @param filesToArchiveUris paths to the files that which will be compressed
+     * @param destDir destination directory
+     * @param destFileName desination archive name
+     */
     Archiver(QStringList filesToArchiveUris, QString destDir, QString destFileName);
 
     /**
-     * @brief process runs archivation of input files and writes them to the output archive
+     * Runs archivation of input files and writes them to the output archive.
      */
     void process();
 
 private:
+    /**
+     * Write information about files to the archive.
+     */
     void writeFilesInfo();
 
+    /**
+     * Write size of specified string and
+     * the text of the string to the archive.
+     * @param s string
+     */
     void writeStringSizeAndString(QString s);
 
+    /**
+     * Writes Key to the archive.
+     * @param key key
+     */
     void writeKey(Key key);
 
+    /**
+     * Compress file that is specified in compressor
+     * using key parameter and write it to the archive
+     * @param key key
+     * @param compressor compressor object with specified input and output streams
+     */
     void compressAndWrite(Key key, std::shared_ptr<Compressor> compressor);
 
 public slots:

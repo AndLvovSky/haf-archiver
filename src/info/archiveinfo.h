@@ -4,6 +4,9 @@
 #include "fileinfo.h"
 #include <vector>
 
+/**
+ * @brief The ArchiveInfo struct information about archive
+ */
 struct ArchiveInfo
 {
 public:

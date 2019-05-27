@@ -13,6 +13,10 @@
 
 using namespace std;
 
+/**
+ * @brief The Unarchiver class decompresses files from archive and writes
+ * them to the output directory
+ */
 class Unarchiver : public QObject
 {
 
@@ -21,21 +25,38 @@ Q_OBJECT
 private:
     QString outputDirPath;
 
+    /**
+     * @brief info Information about archive
+     */
     ArchiveInfo info;
 
-    // we track number of bytes we've read from archive to pass it
-    // to the archive input stream so that decompressor can reset
-    // archive input stream not to the file begin but to the begin
-    // of the specific compressed data part
+    /**
+     * @brief bytesCounter
+     *  We track number of bytes we've read from archive to pass it
+     *  to the archive input stream so that decompressor can reset
+     *  archive input stream not to the file begin but to the begin
+     *  of the specific compressed data part
+     */
     int bytesCounter = 0;
 
+    /**
+     * @brief in Input file stream
+     */
     ByteInputStream in;
 
+    /**
+     * @brief filePath path to the archive
+     */
     QString filePath;
 
     long long fileSize;
 
 public:
+    /**
+     * Constructor
+     * @param archivePath full path to the archive
+     * @param outputDirPath output directory path
+     */
     Unarchiver(QString archivePath, QString outputDirPath);
 
     void process();

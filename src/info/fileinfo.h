@@ -4,6 +4,9 @@
 #include <QString>
 #include <QDateTime>
 
+/**
+ * @brief The FileInfo struct information about a single file
+ */
 struct FileInfo
 {
 public:

@@ -5,7 +5,6 @@ Decompressor::Decompressor(ByteIstream& in, ByteOstream& out,
     const Key& key) : in(in), out(out), key(key), bitReader(BitReader(in)) {}
 
 void Decompressor::decompress() {
-    in.reset();
     emit decompressed(0);
     for (int i = 0; i < key.oldByteCount; i++) {
         char ch = getByte();

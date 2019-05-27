@@ -6,6 +6,10 @@
 #include "stream/byte_ostream.h"
 #include <QDataStream>
 
+/**
+ * @brief The ByteOutputStream class implements ByteOstream and writes data
+ * to the file
+ */
 class ByteOutputStream : public ByteOstream
 {
 private:

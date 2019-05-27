@@ -5,6 +5,10 @@
 #include <qbytearray.h>
 #include "qfile.h"
 
+/**
+ * @brief The ByteInputStream class implements ByteIstream and saves only small
+ * number of bytes in memory
+ */
 class ByteInputStream : public ByteIstream
 {
 private:
